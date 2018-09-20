@@ -1,0 +1,200 @@
+---
+title: "Data visualization and mapping"
+subtitle: "Soc 225: Data & Society"
+author: "[PUT YOUR NAME HERE]"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+---
+
+For the first half of this lab, we'll use the `gapminder` data set. This example is adapted from Kieran Healy's book, *Data Visualization: A Practical Introduction*, chapters 3 and 4: http://socviz.co/
+
+For the second half, we'll use the Seattle Airbnb listings from Inside Airbnb.
+
+# Setup and data import
+
+```{r}
+library(tidyverse)
+# install.packages("gapminder")
+library(gapminder)
+
+theme_set(theme_minimal())
+glimpse(gapminder)
+```
+
+Read about the origins of the `gapminder` data set by typing `?gapminder`, and by looking at the source of the data: https://www.gapminder.org/data/
+
+# Visualization: scatterplots
+
+Scatterplots are a good way to visualize the relationship between two variables, and to look for outliers.
+
+```{r}
+p <- 
+  ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) + 
+  geom_point()
+p
+```
+
+## Scales
+
+To better see our data, we can transform the x-axis into a log scale.
+
+```{r}
+p + scale_x_log10()
+```
+
+
+## Colors
+
+In addition to the x and y axes, another aesthetic available to use is `color`.
+
+For example, we can color data points by continent: 
+
+```{r}
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, color = continent)) + 
+  geom_point() + 
+  scale_x_log10()
+```
+
+If you map a continuous/numeric variable onto color, `ggplot2` will pick a gradient scale: 
+
+```{r}
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, color = log(pop))) + 
+  geom_point() + 
+  scale_x_log10()
+```
+
+## Facets
+
+Let's take a different way of breaking down these data by continent. This time, we'll *facet* the data into "small multiple" plots.
+
+To do this, we add a new layer with `facet_wrap`. Note: the syntax is slightly different! You use a tilde (`~`) before the variable name.
+
+(Why? Because you can facet by more than one variable. In R, this syntax is called a *formula*.)
+
+```{r}
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) + 
+  geom_point() + 
+  scale_x_log10() + 
+  facet_wrap(~continent) 
+```
+
+
+## Data transformation: `mutate`
+
+What if we wanted to look at *total* GDP, not just per capita GDP? To do this, we'd have to create a new variable, using the verb `mutate`. Total GDP is GDP per capita times population.
+
+```{r}
+gapminder %>% 
+  filter(year == 2007) %>%
+  mutate(gdp = gdpPercap * pop) %>%
+  ggplot(aes(x = pop, y = gdp, color = continent)) + 
+  geom_point()
+```
+
+
+## Questions: Life expectancy over time
+
+Instead of looking at the relationship between life expectancy and GDP, now we'll look at changes in life expectancy over time. 
+
+Create a plot where `x = year` and `y = lifeExp`. This time, use a new geom: `geom_line()` instead of `geom_point()`. 
+
+```{r}
+# write your code here!
+```
+
+a. Try creating a line plot of life expectancy by year. Initially, it won't look quite right.  
+
+b. You need to tell the plot to group the lines by country. To do this, you'll need a new aesthetic, `group = country`. Incorporate this into your plot. Does it look more reasonable now?
+
+c. Finally, facet by continent. Does life expectancy seem to have increased over time everywhere? Do you see any dips or decreases? 
+
+# Maps
+
+You can create geographical maps in R, using latitude and longitude data. This uses a new package called `leaflet` (https://rstudio.github.io/leaflet/), which you'll need to install. 
+
+The Inside Airbnb data has latitudes and longitudes for each listing, so we'll use that.
+
+## Points and popups
+
+`leaflet` relies on the pipe (`%>%`) to add layers to maps. 
+
+```{r}
+# install.packages("leaflet")
+library(leaflet)
+
+airbnb_data <- read_csv("data/listings.csv")
+
+leaflet(airbnb_data) %>%
+  addTiles() %>%
+  addCircles(popup = ~name)
+```
+
+## Colors and legends: qualitative/categorical
+
+Colors are a bit less automatic than with `ggplot2`. You need to create a palette using one of the provided functions, and then use that palette for your data and the legend. 
+
+```{r}
+# this palette is based on the type of room
+room_type_pal <- colorFactor("Set1", airbnb_data$room_type)
+
+airbnb_data %>%
+  filter(neighbourhood == "University District") %>%
+  leaflet() %>%
+  addTiles() %>%
+  addCircles(popup = ~name, 
+             color = ~room_type_pal(room_type)) %>%
+  addLegend(pal = room_type_pal, values = ~room_type)
+```
+
+## Questions: colors for a numeric variable
+
+You should use different color palettes for categorical vs numeric data. You've got a couple options for plotting numeric data:
+
+- `colorNumeric`: linear mapping
+- `colorBin`: bins by values
+- `colorQuantile`: bins by quantiles
+
+```{r}
+# filter out outliers
+# remember, you should look at those outliers first!
+# and then **explain** why you're deciding to remove them
+# here, we might think that some of those large values are unreliable
+# they also make some of the scales harder to use and interpret
+new_airbnb_data <- 
+  airbnb_data %>%
+  filter(price <= 500)
+
+price_pal <- colorNumeric("RdPu", new_airbnb_data$price)
+
+## what if you used a quantile-based approach?
+## would you need to remove outliers in this case?
+# price_pal <-
+#   colorQuantile("RdPu", new_airbnb_data$price, n = 5)
+
+## uncomment this code, and use it as a scaffold 
+## for coloring the data points by price
+# leaflet(new_airbnb_data) %>%
+#   addTiles() %>%
+#   addCircles() %>%
+#   addLegend()
+```
+
+a. How many outliers did you filter out? Does that seem reasonable to you, or misleading? 
+
+b. Un-comment the skeleton of code above, and modify it to color the data points by price. Try both the value-based and quantile-based approaches. 
+
+c. Look at the map and explore it. Name one area of the city that seems to have higher-than-average prices, and one area that seems to have lower-than-average prices.
+
+d. Which mapping of prices to colors---linear mapping by value or binning by quantile---do you think is more useful here, and why? There isn't a right answer.
+
+# Challenge: Apply what you've learned
+
+You've learned a variety of techniques for data transformation and visualization: 
+
+- filtering and mutating
+- `geom_point`, `geom_line`, `geom_bar`, and `geom_histogram`
+- colors, facets, and groups
+
+Apply these tools to the Airbnb data set to visualize price and/or review information. Break the data down in some informative way, e.g. by neighbourhood group or room type. Try a few different iterations, and interpret what you see. 
