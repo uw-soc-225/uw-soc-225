@@ -1,0 +1,221 @@
+---
+title: "Exploratory data analysis"
+subtitle: "Soc 225: Data & Society"
+author: "[PUT YOUR NAME HERE]"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+---
+
+# Introduction
+
+Exploratory data analysis, especially data visualization, is a way of understanding patterns and uncertainty in a data set. You can look at variation in the distribution of a single variable, and/or covariation across multiple variables. 
+
+We'll practice doing this with two new data sets related to algorithms and bias. 
+
+The best way to visualize covariation depends on whether your variables are categorical or numeric. This website has an elegant flow chart and examples: https://www.data-to-viz.com/
+
+Today's exercises are inspired by these chapters:
+
+- Chapter 7, Exploratory Data Analysis, of R for Data Science
+  - http://r4ds.had.co.nz/exploratory-data-analysis.html
+- Chapters 5 and 6 of Data Visualization: A Practical Introduction
+  - http://socviz.co/workgeoms.html
+  - http://socviz.co/modeling.html
+
+# Setup
+
+Remember, most of the commands you use are in the various packages that are part of the tidyverse. Make sure to load the tidyverse (`library(tidyverse)`) if a command isn't found!
+
+```{r}
+library(tidyverse)
+theme_set(theme_minimal())
+```
+
+# Data Set 1: COMPAS recidivism scores
+
+ProPublica wrote a story called "Machine Bias" about the COMPAS algorithm, which predicts recidivism and is used to guide criminal sentencing: https://www.propublica.org/article/machine-bias-risk-assessments-in-criminal-sentencing
+
+They did a statistical analysis of racial disparities and wrote up those results here: https://www.propublica.org/article/how-we-analyzed-the-compas-recidivism-algorithm
+
+They've released their data and code publicly on GitHub, which is good practice for data journalism and data science: https://github.com/propublica/compas-analysis
+
+We've talked about this case before, but you should at least skim the story and analysis to make sure you understand the data you're looking at. 
+
+## Read the data
+
+You can use `read_csv` to read a CSV file from an online location by providing a URL instead of a file path. We'll do that instead of downloading the COMPAS data from the repository manually. 
+
+```{r}
+compas <- 
+  read_csv("https://raw.githubusercontent.com/propublica/compas-analysis/master/compas-scores-two-years.csv", 
+           na = c("NA", "N/A"))
+```
+
+## Comparing Black and White defendants
+
+Together, we'll write code to compare the distribution of risk scores between Black and White defendants. Our goal is to make something like the bar charts shown here: https://www.propublica.org/article/how-we-analyzed-the-compas-recidivism-algorithm
+
+1. filter the data to look at only Black and White defendants
+2. make a bar chart 
+3. facet by race
+4. clean up the axes and labels a bit
+
+```{r}
+compas %>%
+  # -1 means that the score is missing, so we'll filter those values out
+  filter(decile_score != -1) %>%
+  # we'll write our code together here
+  filter() %>%
+  ggplot()
+```
+
+## Comparing men and women defendants
+
+Let's apply the same approach to compare women and men. 
+
+```{r}
+compas %>%
+  filter(decile_score != -1) %>%
+  ggplot(aes(x = decile_score)) + 
+  geom_bar() +
+  scale_x_continuous(breaks = 1:10) +
+  facet_wrap(~sex) + 
+  labs(title = "COMPAS recidivism risk scores")
+```
+
+This isn't a great way to compare the two. Why not? Because the relative sizes of the groups are very different. 
+
+### new verbs: `group_by` and `count`
+
+Instead of counts, let's compare *proportions*. To do that, we'll need new `dplyr` verbs. 
+
+`group_by` adds a grouping structure to a data frame. You can then use `mutate` or `summarize` on those groups.
+
+`count` groups by a variable or variables, and then summarizes the number of rows in each group. It's the same as `group_by %>% summarize(n = n()) %>% ungroup()`. 
+
+```{r}
+compas %>% 
+  count(sex, decile_score) %>% 
+  group_by(sex) %>% 
+  mutate(proportion = n/sum(n)) %>%
+  ggplot(aes(x = decile_score, y = proportion)) + 
+  geom_bar(stat = "identity") + 
+  facet_wrap(~sex)
+```
+
+Now, it's clear that a larger proportion of women have lower risk scores. 
+
+## Question: proportions by race
+
+Modify the code above to plot proportions by race, instead of counts. This time, don't filter out any racial groups. 
+
+```{r}
+# write your code here
+```
+
+# Data Set 2: PASSNYC schools data
+
+The non-profit PASSNYC is interested in improving access to education in New York City and in increasing the diversity of students taking the SHSAT exam for elite public schools. 
+
+They've created a "Data Science for Good" challenge on Kaggle: https://www.kaggle.com/passnyc/data-science-for-good/home
+
+Read the overview for this challenge. We'll download their data and use it for exploratory analysis. 
+
+Optionally, you can read more about testing and segregation in NYC public schools here: https://www.nytimes.com/2018/06/21/nyregion/what-is-the-shsat-exam-and-why-does-it-matter.html
+
+##  Get and clean the data
+
+To download the data, you'll need to create a Kaggle account. Download the data, unzip the files, and put them in your project folder. **You may need to adjust the file path you use to read the data.**
+
+I've written some data cleaning code that you should run. `parse_number` turns percents and currencies into numbers. 
+
+```{r}
+schools_raw <- 
+  read_csv("data/data-science-for-good/2016 School Explorer.csv", 
+           na = c("NA", "N/A"))
+
+schools <- 
+  schools_raw %>%
+  mutate_at(vars(starts_with("Percent")), parse_number) %>%
+  mutate_at(vars(ends_with("%")), parse_number) %>%
+  mutate_at(vars(ends_with("Rate")), parse_number) %>%
+  mutate(`School Income Estimate` = parse_number(`School Income Estimate`))
+```
+
+## Scatterplots and smoothing
+
+Let's look at the association or *covariation* between two variables. The student attendance rate should be closely associated with the percent of students who are chronically absent.
+
+Notice that variable names can't normally have spaces in them! Since these do, we surround the names with backticks (``). 
+
+```{r}
+schools %>%
+  ggplot(aes(x = `Percent of Students Chronically Absent`, 
+                    y = `Student Attendance Rate`)) + 
+  geom_point(alpha = .5) + 
+  geom_smooth()
+```
+
+One school apparently has 0% attendance. If we filter out this outlier, then the trend is basically linear. 
+
+```{r}
+schools %>%
+  filter(`Percent of Students Chronically Absent` != 100) %>%
+  ggplot(aes(x = `Percent of Students Chronically Absent`, 
+                    y = `Student Attendance Rate`)) + 
+  geom_point(alpha = .5) + 
+  geom_smooth(method = "lm")
+```
+
+## Economic need and race
+
+These plots are based on a kernel by Randy Lao: https://www.kaggle.com/randylaosat/simple-exploratory-data-analysis-passnyc
+
+The racial composition of a school is related to an index of economic need in a way that varies by race.  
+
+```{r}
+schools %>%
+  ggplot(aes(x = `Economic Need Index`, y = `Percent White`)) + 
+  geom_point() + 
+  geom_smooth()
+```
+
+### new verb: `gather`
+
+Alternative, we can plot covariation between racial composition and economic need for all racial groups simultaneously. But to do this, we need to rely on *tidy data* principles, and convert the data from **wide** to **long** format using `gather`. 
+
+```{r}
+schools %>%
+  gather(key = "Race", value = "Percent", 
+         `Percent Asian`, `Percent Black`, 
+         `Percent Hispanic`, `Percent White`) %>%
+  mutate(Percent = Percent/100) %>%
+  ggplot(aes(x = `Economic Need Index`, y = Percent, color = Race)) + 
+  geom_point(alpha = .5) + 
+  geom_smooth(method = "lm", color = "black") +
+  facet_wrap(~Race) +
+  guides(color = FALSE) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Student racial composition and economic need")
+```
+
+## Question: explore the PASSNYC data
+
+Explore the PASSNYC data set a bit on your own. Get a sense for what variables it contains and what their distributions are. `View(schools)` and `names(schools)` are ways to do this in R, but the Kaggle page also has some information: https://www.kaggle.com/passnyc/data-science-for-good 
+
+Then, pick two variables whose covariation you want to explore. Make a scatterplot. Add a trend, either a curve (the default `geom_smooth()`) or or a straight line (`geom_smooth(method = "lm")`). 
+
+```{r}
+# write your code here
+```
+
+# Challenge: run a model
+
+Statistical models in R use a formula syntax (`z ~ x + y`). `lm` and `glm` are common modeling functions. Try out models incorporating multiple covariates on either of today's data sets. Print a summary of the results, and, if you're ambitious, try to visualize them. See http://socviz.co/modeling.html and http://r4ds.had.co.nz/model-basics.html for how to do that.
+
+```{r}
+fit1 <- lm(decile_score ~ race + sex, data = filter(compas, decile_score != -1))
+summary(fit1)
+```
