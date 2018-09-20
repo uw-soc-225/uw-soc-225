@@ -1,0 +1,210 @@
+---
+title: "Social Networks"
+subtitle: "Soc 225: Data & Society"
+author: "[PUT YOUR NAME HERE]"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+---
+
+# Social networks
+
+These exercises are based off of a workshop written and taught by Alex Hanna, Pablo Barberá, and Dan Cervone: https://github.com/pablobarbera/data-science-workshop/tree/master/sna
+
+# Setup
+
+We'll use the `tidygraph` and `ggraph` packages to manipulate and visualize networks. `tidygraph` is a tidy interface built on top of the `igraph` package, and `ggraph` is an extension of `ggplot2` for plotting network data.
+
+You can read more about `tidygraph` here: https://www.data-imaginist.com/2017/introducing-tidygraph/
+
+You'll need to install and load these packages: 
+
+```{r warning=FALSE, message=FALSE}
+# install.packages("tidygraph")
+# install.packages("ggraph")
+
+library(tidyverse)
+library(tidygraph)
+library(igraph)
+# if you get an error below, reinstall ggplot2
+# install.packages("ggplot2")
+library(ggraph)
+```
+
+# Star Wars
+
+Our first example is a small network of character interactions in Star Wars: Episode IV, described further here: https://cdn.rawgit.com/pablobarbera/data-science-workshop/master/sna/01_networks_intro.html
+
+## Questions: look at the data
+
+First, read in the data. There are *two* data sets, one of nodes, and one of edges.
+
+```{r}
+nodes_sw <- read_csv("data/star-wars-network-nodes.csv") 
+edges_sw <- read_csv("data/star-wars-network-edges.csv") 
+```
+
+Look at both data sets and answer these questions: 
+
+- How many characters are there? Which data set lists the characters?
+- How many connections between the characters? Which data set lists the connections?
+
+Now, we combine the nodes and edges into a *graph* object: 
+
+```{r}
+g_sw <- 
+  graph_from_data_frame(d = edges_sw, vertices = nodes_sw, directed = FALSE) %>%
+  as_tbl_graph()
+```
+
+- This is an *undirected* graph. Why?
+
+
+## Plotting a graph
+
+Let's plot it with `ggraph`: 
+
+```{r}
+set.seed(123)
+g_sw %>%
+  ggraph(layout = "nicely") + 
+  geom_edge_link(colour = "gray", alpha = .5) + 
+  geom_node_point(size = 6, color = "steelblue", alpha = .5) + 
+  theme_graph() 
+
+```
+
+And with names: 
+
+```{r}
+set.seed(123)
+g_sw %>%
+  ggraph(layout = "nicely") + 
+  geom_edge_link(colour = "gray", alpha = .5) + 
+  geom_node_point(size = 6, color = "steelblue", alpha = .5) + 
+  geom_node_text(aes(label = name)) +
+  theme_graph()
+```
+
+## Measuring communities
+
+Finally, it's possible to algorithmically group nodes into *communities* in a variety of ways. Here's an example: 
+
+```{r}
+set.seed(123)
+g_sw %>%
+  mutate(community = as.factor(group_infomap())) %>%
+  ggraph(layout = "nicely") + 
+  geom_edge_link(colour = "gray", alpha = .5) + 
+  geom_node_point(aes(color = community), size = 6, alpha = .5) + 
+  geom_node_text(aes(label = name)) +
+  theme_graph()
+
+```
+
+# US Congress Members on Twitter
+
+Our second network is US Congress members on Twitter, from 2016: https://cdn.rawgit.com/pablobarbera/data-science-workshop/master/sna/03_challenge_1_solutions.html
+
+```{r}
+nodes <- read_csv("data/congress-twitter-network-nodes.csv", 
+                  col_types = list(id_str = col_character()))
+
+edges <- read_csv("data/congress-twitter-network-edges.csv", 
+                  col_types = list(col_character(), col_character()))
+
+g <- 
+  graph_from_data_frame(d = edges, vertices = nodes, directed = TRUE) %>%
+  as_tbl_graph()
+```
+
+- How many representatives and how many senators are in the data?
+- This is a *directed* graph. Why?
+
+## Senators by party affiliation
+
+Let's plot just the senators: 
+
+```{r}
+set.seed(123)
+g %>% 
+  filter(chamber == "sen") %>%
+  ggraph(layout = "nicely") + 
+  geom_edge_link(colour = "gray", alpha = .1, width = .1) +
+  geom_node_point(aes(color = fct_rev(party)), size = 2, alpha = .5) + 
+  theme_graph() +
+  labs(color = "Party affiliation")
+
+```
+
+## Labeling senators
+
+Let's clean up the graph a bit. One senator isn't connected at all, so let's remove that one. Let's also label the senators from Washington.
+
+```{r}
+set.seed(123)
+g %>%
+  filter(chamber == "sen") %>%
+  filter(!node_is_isolated()) %>%
+  mutate(WA = (name %in% c("Patty Murray", "Maria Cantwell"))) %>%
+  ggraph(layout = "nicely") + 
+  geom_edge_link(colour = "gray", alpha = .1, width = .1) + 
+  geom_node_point(aes(color = fct_rev(party)), size = 4, alpha = .4) + 
+  geom_node_text(aes(label = name, filter = WA)) +
+  theme_graph() +
+  labs(color = "Party affiliation")
+```
+
+- Do you see evidence of polarization, i.e. of homophily by political party?
+
+If we convert the graph to an undirected graph, we can use a community detection algorithm on it: 
+
+```{r}
+set.seed(123)
+g %>%
+  filter(chamber == "sen") %>%
+  filter(!node_is_isolated()) %>%
+  to_undirected() %>%
+  mutate(community = as.factor(group_louvain())) %>%
+  ggraph(layout = "nicely") + 
+  geom_edge_link(colour = "gray", alpha = .1, width = .1) + 
+  geom_node_point(aes(color = community), size = 2,
+                  alpha = .4) +
+  theme_graph()
+```
+
+## Questions: House of Representatives
+
+Do you see evidence of polarization in the House of Representatives too? Make a plot of representatives only. In order to make this work, *don't* plot the edges this time! If you do, your plot will be very slow. 
+
+Also experiment with layouts other than "nicely". Force-directed layouts (like "kk" and "fr") can be especially useful.
+
+```{r}
+set.seed(123)
+# write your code here
+
+```
+
+## Questions: number of followers
+
+You can use the `size` aesthetic to vary node size according to the number of followers. Do this for the Senate graph. 
+
+Then, add labels to your plot for the top 5 senators by number of followers.
+
+```{r}
+set.seed(123)
+# write your code here
+
+```
+
+# Challenge: Network measures
+
+There are a variety of mathematical measures for characterizing properties of networks. `graph_assortativity` measures the amount of homophily in a graph. Calculate the assortativity by party for the House, the Senate, and Congress as a whole. 
+
+Note: `graph_assortativity` needs to be used *within* the `mutate` function.
+
+```{r}
+# write your code here
+```
+
