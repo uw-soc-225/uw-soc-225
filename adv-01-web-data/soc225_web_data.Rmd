@@ -1,0 +1,180 @@
+---
+title: "Collecting data using the Internet"
+subtitle: "Soc 225: Data & Society"
+author: "[PUT YOUR NAME HERE]"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+---
+
+The architecture of the Internet shapes the ways we can collect data from it. We'll introduce you to two ways of getting data from the Internet: 
+
+1. Web scraping
+2. Application Programming Interfaces (APIs)
+
+Web scraping is made possible by the front-end structure of a web page---the HTML and CSS that make up most of what you see on the Internet. 
+
+Web APIs are structured ways of making web requests. This is how websites communicate with databases and with each other; most data is transmitted over the Internet in this way.
+
+# Setup
+
+To collect Internet data, we'll use two new packages. `rvest` is for web scraping, and `httr` is for making http requests. These packages are part of the `tidyverse`, but they *aren't* loaded by default. Instead, we load them separately. 
+
+```{r}
+library(tidyverse)
+library(rvest)
+library(httr)
+
+theme_set(theme_minimal())
+options(scipen = 999)
+```
+
+# Web scraping
+
+This example is based on a tutorial by Chris Bail, a sociology professor at Duke University: https://cbail.github.io/SICSS_Screenscraping_in_R.html
+
+We'll extract a table from this Wikipedia page: https://en.wikipedia.org/wiki/World_Health_Organization_ranking_of_health_systems_in_2000 
+
+First, have a look at the page in a web browser. Then right click and hit "inspect" to look at the underlying HTML. 
+
+Then, read the page into R using `read_html`. Inspect the results in the console.
+
+```{r}
+wikipedia_page <- 
+  read_html("https://en.wikipedia.org/wiki/World_Health_Organization_ranking_of_health_systems_in_2000")
+
+wikipedia_page
+```
+
+There are two ways of identifying and selecting segment of html: CSS selectors and XPath. Right click when you're inspecting a node in Chrome to copy one of these. If one doesn't work, you can try the other.
+
+```{r}
+# CSS selector
+section <- html_node(wikipedia_page, css = "#mw-content-text > div > table")
+
+# XPath
+# section <- html_node(wikipedia_page, xpath = '//*[@id="mw-content-text"]/div/table')
+
+section
+```
+
+```{r}
+health_rankings <- html_table(section)
+health_rankings <- as_tibble(health_rankings)
+
+health_rankings
+```
+
+## Questions: try out web scraping
+
+Now try this out on a new web page. 
+
+Read in this Wikipedia page listing US cities by population:  https://en.wikipedia.org/wiki/List_of_United_States_cities_by_population
+
+Extract the first table (the full list of cities) from it and parse the html into a data frame. Look at the data frame, and pay attention to the data types. Do you see anything you'd need to process further before making any plots of this data? (You don't actually have to process or plot the data.)
+
+You can extract a table from a different web page instead, if you wish.
+
+```{r}
+# write your code here
+```
+
+# APIs and web requests
+
+This is excerpted from a previous tutorial I've written: https://github.com/ccgilroy/retrieving-data-through-apis
+
+## http verbs and statuses
+
+HTTP is a protocol which underlies the web. You make a *request* to a particular URL and get a *response* back. 
+
+The methods for making requests are verbs: GET, POST, PUT, DELETE...
+
+A basic example: 
+
+```{r}
+r <- GET("https://http.cat/200")
+r
+```
+
+```{r}
+status_code(r)
+
+r_body <- content(r, as = 'raw')
+head(r_body)
+
+write_file(r_body, "200.jpg")
+```
+
+## paths and queries
+
+The World Bank has a database of information about different countries: https://datahelpdesk.worldbank.org/knowledgebase/topics/125589
+
+To get data from the World Bank API, we need to build a url. In addition to the base website name, this can have two trailing components: 
+
+- a path, separated with slashes (like `/path/to/resource`)
+- a query, separated with ? and & (like `?key1=value1&key2=value2`)
+
+```{r}
+# the base url (protocol + host)
+wb_url <- "http://api.worldbank.org"
+
+# the path to a particular country
+wb_path <- str_c("countries", "us", sep = "/")
+
+# a query parameter telling the API what format we want
+wb_query <- list(
+  format = "json"
+)
+
+```
+
+```{r}
+r2 <- GET(wb_url, path = wb_path, query = wb_query)
+r2
+```
+
+```{r}
+# install.packages("jsonlite")
+library(jsonlite)
+prettify(content(r2, as = "text"))
+```
+
+## Questions: population of a country
+
+The World Bank has data on country populations over time. To access this, we'll need a new path: 
+
+```{r}
+new_path <- str_c("countries", "us", "indicators", "SP.POP.TOTL", sep = "/")
+new_path
+```
+
+Write a new request to get this data.
+
+```{r}
+# write your code here
+```
+
+You'll need some tools from the `jsonlite` package to extract the data frame from this JSON object, namely `fromJSON` and `flatten`. 
+
+```{r}
+# uncomment this code: 
+# r3_body <- fromJSON(content(r3, as = "text"))
+# d <- flatten(r3_body[[2]])
+```
+
+Once you've extracted the data frame, make a line plot of population growth over time. 
+
+```{r}
+# write your code here
+```
+
+# Challenge: Authentication
+
+Many APIs require some form of *authentication* to access. The simplest form of authentication is through an API key, which you send as a query parameter along with your request. 
+
+Choose either the Census API or the Google Maps Geocoding API, request an API key, and use that key to make an http request. 
+
+https://walkerke.github.io/tidycensus/articles/basic-usage.html
+
+https://developers.google.com/maps/documentation/geocoding/start
