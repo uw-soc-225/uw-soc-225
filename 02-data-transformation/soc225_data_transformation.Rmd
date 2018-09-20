@@ -1,0 +1,219 @@
+---
+title: "Data transformation and visualization"
+subtitle: "Soc 225: Data & Society"
+author: "[PUT YOUR NAME HERE]"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+---
+
+Today, we'll continue working with the Inside Airbnb data. This time, we'll use the full data set of listings for Seattle. 
+
+Today's exercises are based off of Chapter 5 of *R for Data Science*: http://r4ds.had.co.nz/transform.html
+
+# Setup
+
+```{r}
+library(tidyverse)
+```
+
+# Review: reading data
+
+Once you've loaded the `tidyverse` package, the `read_csv` function will read data into R.
+
+## Question 1: read the data
+
+Read the `listings.csv` file from the `data/` folder into R and assign it to the variable name `airbnb_data` using the `<-` operator. 
+
+```{r}
+# write your code here
+```
+
+This data frame has more variables (= columns) and observations (= rows) than last week's data set. You can get an overview of the different columns using the `glimpse` function:
+
+```{r}
+glimpse(airbnb_data)
+```
+
+# Data transformation
+
+## Pipes
+
+First, let's practice piping! This is how we apply a series of transformations to data.
+
+For example, to look at the first 6 unique values of the `neighbourhood` variable: 
+
+```{r}
+airbnb_data$neighbourhood %>% unique() %>% head()
+
+# same as 
+# head(unique(airbnb_data$neighbourhood))
+```
+
+## Verbs: filter
+
+`filter` filters down to a subset of the data by **row**.
+
+You can filter by values in one or more columns, using comparison operators like these:
+
+- `==`: equal to
+- `!=`: not equal to
+- `>`, `<`, `>=`, `<=`
+- `%in%`
+
+This will give us the observations in the "Central Area" neighbourhood group:
+
+```{r}
+airbnb_data %>%
+  filter(neighbourhood_group == "Central Area")
+```
+
+These are the 696 listings in the Central Area.
+
+What about multiple criteria? For instance, if we only want to see listings in the Central Area with at least 10 reviews: 
+
+```{r}
+# `&` means "and", `|` means "or"
+airbnb_data %>%
+  filter(neighbourhood_group == "Central Area" & number_of_reviews >= 10)
+```
+
+There are 444 such listings.
+
+### Question 2: How many listings?
+
+How many listings are there in the UDistrict? Write code to filter the data set only to listings in the "University District" `neighbourhood_group`.
+
+```{r}
+# write your code here
+```
+
+Write the number of listings here:
+
+## Verbs: select
+
+`select` selects particular **columns**, by name: 
+
+```{r}
+airbnb_data %>%
+  head(100) %>%
+  select(id, name, neighbourhood_group, neighbourhood, 
+         price, number_of_reviews) 
+```
+
+This is how I generated the data for Week 1.
+
+You can use `-` to remove particular columns, too:
+
+```{r}
+airbnb_data %>%
+  select(-latitude, -longitude)
+```
+
+## Verbs: arrange
+
+`arrange` reorders a data set by one or more columns, in ascending or descending order.
+
+Let's order the data by price, cheapest first:
+
+```{r}
+airbnb_data %>%
+  select(id, name, host_name, 
+         neighbourhood_group, neighbourhood, 
+         price, number_of_reviews) %>%
+  filter(price > 0) %>%
+  arrange(price)
+```
+
+Most expensive first: 
+
+```{r}
+airbnb_data %>%
+  select(id, name, host_name, 
+         neighbourhood_group, neighbourhood, 
+         price, number_of_reviews) %>%
+  arrange(desc(price))
+```
+
+### Question 3: which listings have the most reviews?
+
+Show the listings in the UDistrict that have the most reviews (`arrange` by `number_of_reviews` in `desc` order):
+
+```{r}
+# write your code here
+```
+
+# Data visualization
+
+We'll start by plotting a single variable, using bar charts and histograms.
+
+## Bar charts
+
+There are three types of rooms: 
+
+```{r}
+unique(airbnb_data$room_type)
+```
+
+Let's plot how many there are of each using a bar chart. Bar charts are for *categorical* values. 
+
+```{r}
+airbnb_data %>% 
+  ggplot(aes(x = room_type)) + 
+  geom_bar()
+```
+
+## Histograms
+
+What's the distribution of reviews that an Airbnb gets? We can see this using a histogram. Histograms are for *continuous* or numeric values.
+
+```{r}
+airbnb_data %>%
+  ggplot(aes(x = number_of_reviews)) + 
+  geom_histogram()
+```
+
+### Question 4: histogram of prices
+
+Make a histogram of prices. When you do this, you'll see that it's hard to make sense of, because a few prices are really large.
+
+To get a better look at the distribution of prices, filter out large values before plotting (e.g. `price <= 500`).
+
+
+```{r}
+# write your code here
+```
+
+# Challenge question: making a plot legible
+
+The code below makes a bar plot of `neighbourhood_group`---but you can't read the neighborhood names! 
+
+There are a couple ways to fix this. For instance, you could flip the x and y axes. Or, you could angle the text of the names. Try to figure out how to do one of those things, and modify the code below accordingly.
+
+```{r}
+airbnb_data %>%
+  ggplot(aes(x = neighbourhood_group)) +
+  geom_bar() 
+```
+
+# Just for fun: ggplot themes
+
+The gray theme is the default, but ggplot has a variety of themes you can use. For example, I like the minimal theme better (`theme_minimal`). Type `?theme_gray` for a list. 
+
+```{r}
+airbnb_data %>%
+  ggplot(aes(x = number_of_reviews)) + 
+  geom_histogram() +
+  theme_minimal() + 
+  labs(title = "Distribution of reviews", 
+       x = "number of reviews")
+
+# for even more fun themes:
+# install.packages("ggthemes")
+# library(ggthemes)
+# airbnb_data %>%
+#   ggplot(aes(x = number_of_reviews)) + 
+#   geom_histogram() +
+#   theme_wsj()
+```
