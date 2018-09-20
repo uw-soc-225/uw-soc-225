@@ -1,0 +1,68 @@
+---
+title: "Google Trends and Search"
+subtitle: "Soc 225: Data & Society"
+author: "[PUT YOUR NAME HERE]"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+---
+
+**TODO: Troubleshoot Google Trends widget embedding**
+
+# Google Trends
+
+## Single term
+
+Go to Google Trends (https://trends.google.com/trends/?geo=US) and search for "crisis actors." Look at variation by time and by region. 
+
+**Question: why is there a spike in mid-February?** Look at the related topics and queries for hints at the answer.
+
+## Comparison
+
+Compare the relative popularity of the following social media platforms using Google Trends: Facebook, Twitter, Instagram, and YouTube. **According to Google Trends, what is the order of popularity for these platforms? Do you think volume of Google searches is a good metric of social media use?**
+
+## Try it out
+
+Come up with a set of search terms that you think would make an interesting comparison, and describe your results here.
+
+## Embedding a Google Trends widget
+
+You can embed a Google Trends widget as an interactive object, but the steps are a little tricky: 
+
+1. In Google Trends, click the "Embed" button ("< >") and copy the code
+2. Paste it into your Rmd file, and knit to html
+3. Open the html in Chrome
+4. Inspect the chart, and copy the "iframe" element
+5. Paste *that* into your Rmd file, and delete the original script
+6. Add a height to the iframe (e.g. height="450px")
+7. Regenerate and reopen the html
+
+The final result should look like this: 
+
+<iframe id="trends-widget-1" src="https://trends.google.com:443/trends/embed/explore/TIMESERIES?req=%7B%22comparisonItem%22%3A%5B%7B%22keyword%22%3A%22crisis%20actors%22%2C%22geo%22%3A%22US%22%2C%22time%22%3A%22today%2012-m%22%7D%5D%2C%22category%22%3A0%2C%22property%22%3A%22%22%7D&amp;tz=420&amp;eq=q%3Dcrisis%2520actors%26geo%3DUS%26date%3Dtoday%2012-m" width="100%" frameborder="0" scrolling="0" height="450px"></iframe>
+
+**Below, embed one of the charts from your Google Trends search in the previous question.**
+
+# Google Ngrams
+
+The Google Ngram Viewer draws on Google Books to show the use of terms over time. It has some interesting uses, especially in digital humanities, but with important caveats: https://www.wired.com/2015/10/pitfalls-of-studying-language-with-google-ngram/
+
+(What's a n-gram? A sequence of one or more words.)
+
+Try looking at references to different communications technologies, e.g., the Internet, TV, and radio. Do the results change if you make the searches case-insensitive?
+
+<iframe name="ngram_chart" src="https://books.google.com/ngrams/interactive_chart?content=Internet%2CTV%2Cradio&case_insensitive=on&year_start=1800&year_end=2008&corpus=15&smoothing=3&share=&direct_url=t4%3B%2CInternet%3B%2Cc0%3B%2Cs0%3B%3BInternet%3B%2Cc0%3B%3Binternet%3B%2Cc0%3B%3BINTERNET%3B%2Cc0%3B.t4%3B%2CTV%3B%2Cc0%3B%2Cs0%3B%3BTV%3B%2Cc0%3B%3Btv%3B%2Cc0%3B%3BtV%3B%2Cc0%3B%3BTv%3B%2Cc0%3B.t4%3B%2Cradio%3B%2Cc0%3B%2Cs0%3B%3Bradio%3B%2Cc0%3B%3BRadio%3B%2Cc0%3B%3BRADIO%3B%2Cc0" width=900 height=500 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no></iframe>
+
+## Try it out
+
+**Search for another set of terms of interest, and embed the results below.** (See this article for some examples: http://techland.time.com/2014/01/16/google-books-ngram-viewer/)
+
+# Challenge: Google Takeout
+
+Download some of your own data from Google Takeout: https://takeout.google.com/settings/takeout
+
+I recommend only picking one or two applications! Otherwise, your download file will be very large. Read this Twitter thread for some examples: https://twitter.com/iamdylancurran/status/977559925680467968
+
+Look at your Google data, and describe the data structure. See if you can read some of the files into R.
+
