@@ -1,0 +1,144 @@
+---
+title: "Reading data"
+subtitle: "Soc 225: Data & Society"
+author: "[PUT YOUR NAME HERE]"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+---
+
+# Opening this file
+
+You should click on `01-reading-data.Rproj` when you open this lab project. Check your *working directory* if you run into trouble loading your data.
+
+# Rectangular data
+
+First, we'll look at rectangular data, which are data organized into a table of rows and columns. This is the most common type of data we'll see, and if data are in another form we'll often want to make them rectangular.
+
+Check out the data folder. There's a comma-separated values (CSV) file called `seattle_airbnb.csv`. This contains data about 100 Airbnb listings from Seattle. 
+
+These data come from Inside Airbnb, http://insideairbnb.com/. Go to the website and have a look at the About, Behind, and Get the Data pages. 
+
+**Question: Who created these data sets? Why did they do it? Where were the data sourced from?** 
+
+
+
+[WRITE AN ANSWER HERE]
+
+
+
+
+## Setup
+
+R doesn't come with everything we need loaded by default. Before we do anything else, we need to load a *package*. The package we'll use is called "tidyverse." You can read more about the tidyverse here: https://www.tidyverse.org/
+
+If a package hasn't been installed on your machine, you'll need to install it. For instance, you'd type `install.packages("tidyverse")`. 
+
+Run this chunk of code to load the tidyverse:
+
+```{r}
+library(tidyverse)
+```
+
+## Importing data
+
+To use data inside R, we first have to import, or *read*, that data into our environment.
+
+```{r}
+airbnb_data <- read_csv("data/seattle_airbnb.csv")
+```
+
+When we do this, we assign the values of the data to a variable, `airbnb_data`, using the arrow (`<-`). The object we create is called a data frame.
+
+## Looking at the data
+
+You can print the data frame to the console by typing the name of the object:
+
+```{r}
+airbnb_data
+```
+
+You can also look at the entire data set using RStudio's built-in viewer: 
+
+```{r}
+# "un-comment" the line below this one, by removing the '#' and the space
+# View(airbnb_data)
+```
+
+You can also look at parts of the data frame instead: 
+
+```{r}
+head(airbnb_data)
+```
+
+**Question: `head` shows the first 6 rows by default. Change the following code to show the first 10 rows:** 
+
+```{r}
+head(airbnb_data, n = 6)
+```
+
+**Question: What if you want to look at the *last* several rows of a data frame instead of the first several rows?**
+
+To find out, read the documentation for `head` by typing `?head` into the console.
+
+```{r}
+# [TYPE YOUR ANSWER HERE, AND RUN IT]
+```
+
+You can extract a single column by name using `$`:
+
+```{r}
+head(airbnb_data$name)
+```
+
+# Hierarchical data
+
+Data isn't always a single, flat table. Sometimes it's nested or hierarchical.
+
+`colors.json` is a file in JSON format. This is a common format for web data. Open it up and have a look at it. You can read it into R using another package: 
+
+```{r}
+library(jsonlite)
+json_data <- read_json("data/colors.json")
+```
+
+When you do, it becomes a different type of R object, a *list*: 
+
+```{r}
+str(json_data)
+```
+
+It's a little trickier, but you can use `[[]]` and `$` to extract pieces of this data. For example, the 5th color: 
+
+```{r}
+json_data$colors[[5]]
+```
+
+**Question: see if you can extract the hex code for red. Look at the output above for hints.**
+
+```{r}
+# [TYPE YOUR ANSWER HERE, AND RUN IT]
+```
+
+# Challenge: Excel worksheets
+
+In the data folder, there is an Excel spreadsheet, `airbnb.xlsx`. It contains data for three cities (Seattle, Boston, Chicago) in separate sheets. Use the internet to find a package that will allow you to read in all of this data. If you read in each sheet separately, combine them into one data frame.
+
+# Just for fun: Image data
+
+Images are data too, and R can import them as well. If you have extra time, check out the vignette for the `magick` package: 
+
+https://cran.r-project.org/web/packages/magick/vignettes/intro.html
+
+```{r}
+# install.packages("magick")
+# library(magick)
+# cat <- image_read("data/Black_white_cat_on_fence.jpg")
+# cat
+# image_flip(cat)
+```
+
+# Turning in your assignment
+
+Press the "knit" button to produce an html file that will have all of your output. Please turn in **both** the Rmd and html files on Canvas.
