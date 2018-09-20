@@ -1,0 +1,21 @@
+---
+title: "Categorical and text data"
+subtitle: "Soc 225: Data & Society"
+author: "[PUT YOUR NAME HERE]"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+---
+
+# Categorical data
+
+```{r}
+library(forcats)
+```
+
+# Text data
+
+```{r}
+library(stringr)
+```
