@@ -1,0 +1,35 @@
+---
+title: "How to install R and RStudio"
+subtitle: "Soc 225: Data & Society"
+author: "Connor Gilroy"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+---
+
+# Why? 
+
+1. **R is free and open source.** You don't have to pay anything to download and use it, and you can keep using it after this class and after you graduate. 
+
+2. **R has a vibrant community.** Many people use R for data science, and they've created tools, written tutorials, and answered almost any questions you might have online. Using R makes you part of this community. 
+
+3. **R packages can do whatever you want.** R's strength is its ecosystem of packages. These extensions of R, developed by the community, provide tools for any programming or data analysis problem imaginable. You aren't confined to the built-in capacities of the program. 
+
+# Install R
+
+R is a programming language, originally designed for statistics. It's one of the two most common languages for data science. 
+
+To install R, go to this website and click the appropriate link for your computer's operating system: https://cloud.r-project.org/
+
+I'd recommend the most recent version of R, which is 3.5.1. You'll want to update your R version occasionally. 
+
+# Install RStudio
+
+RStudio is a convenient environment or interface for using R. RStudio is also free to use, and makes using R much easier and more pleasant. 
+
+Download the desktop version of RStudio for your laptop using the appropriate Installer here: https://www.rstudio.com/products/rstudio/download/#download
+
+# Try it out
+
+Open RStudio and test out your R setup. Start by installing the tidyverse (`install.packages("tidyverse")`) and loading it (`library(tidyverse)`). Let me know if you have questions!
