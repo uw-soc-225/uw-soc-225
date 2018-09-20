@@ -1,0 +1,74 @@
+---
+title: "Homework 3"
+subtitle: "Soc 225: Data & Society"
+author: "[PUT YOUR NAME HERE]"
+date: "`r Sys.Date()`"
+output: html_notebook
+---
+
+Write all code in the chunks provided!
+
+Remember to unzip to a real directory before running everything!
+
+Question one should be roughly analogous to what we've done in class. There are hints at the bottom of this document if you get stuck. If you still can't figure it out, go to google/stack exchange/ask a friend. Finally, email me or come to office hours :).
+
+## Problem 1: Preparing Data
+
+1.1 Set up your environment by: 
+-A. Loading the tidyverse  
+-B. Reading the Airbnb Data: There's another new dataset. This one has almost 10,000 cases and the census data by zipcode
+
+  
+I've given you absolute populations and proportions for the racial composition of the zipcode for each listing. I've also made a variable called 'modal_race' which is the race with the largest proportion in that neighborhood. 
+
+1.2 Use a scatter plot to compare how unit prices change with the proportion of a particular race.
+Bonus: group by zipcode for this plot
+  
+  
+1.3 Use the modal_race variable to plot a box plot comparing race and price.
+Bonus: show how the comparison differs by neighborhood group.
+
+
+1.4 Interpret your answer to 1.3. Check the hints if you need help.
+  *Your answer should be at least a few sentences here*
+
+## Problem 2: Plan Your Plots
+*You'll need to have a few plots in your poster. It helps to think about what you want to present and how you'll prepare and present that using your data. You'll plan 3 plots below (they don't all have to be in your final poster). For each, provide:*
+  
+a. The purpose of the plot: what do you want people to understand when they see this?  
+b. The type of plot: what geom functions will you use to present the plot? Why are those the best choices?  
+c. Limitations/biases: What is missing from this presentation? Could someone get the wrong idea? What can you do to help limit the negative possibilities here?  
+
+Plot idea 1:  
+a.  
+b.  
+c.  
+
+Plot idea 2:  
+a.  
+b.  
+c.  
+
+Plot idea 3:  
+a.  
+b.  
+c.  
+  
+  
+  
+## Problem 3: Make the Plots  
+Using your plans from problem 3, produce the plots in r. Use as many codeblocks as you need. Make sure to include proper titles and labels. Think about reducing chart junk and improving your data/ink ratio.
+  
+Plot 1:  
+Plot 2:  
+Plot 3:  
+
+
+##Hints
+
+1.4
+Check out these resources if you're not sure about interpreting box plots:
+
+https://magoosh.com/statistics/reading-interpreting-box-plots/
+https://www.youtube.com/watch?v=oBREri10ZHk 
+
