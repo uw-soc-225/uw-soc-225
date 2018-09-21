@@ -8,40 +8,53 @@ output:
     toc: true
 ---
 
-# Opening this file
+# Goals
 
-You should click on `01-reading-data.Rproj` when you open this lab project. Check your *working directory* if you run into trouble loading your data.
+- Open a project file in R
+- Read data of various types into R
+- Describe the sources of datasets
 
-# Rectangular data
+# 0: Opening this file
 
-First, we'll look at rectangular data, which are data organized into a table of rows and columns. This is the most common type of data we'll see, and if data are in another form we'll often want to make them rectangular.
+You'll download all of the lab files for this class as `.zip` files from canvas. To use them, you'll have to unzip them into their own directory (not a temporary directory that lets you explore the files inside), and open the project file. 
 
-Check out the data folder. There's a comma-separated values (CSV) file called `seattle_airbnb.csv`. This contains data about 100 Airbnb listings from Seattle. 
+You should click on `01-reading-data.Rproj` when you open this lab project. R project files automatically give you access to the files and directories (folders) in the project directory. This makes it much easier for use to load multiple data sets.
 
-These data come from Inside Airbnb, http://insideairbnb.com/. Go to the website and have a look at the About, Behind, and Get the Data pages. 
+If you get stuck on one of the questions below, first check the bottom of this document for hints. Then try googling your issue or talking to somebody sitting near you. Finally, raise your hand and I'll come help you out.
 
-**Question: Who created these data sets? Why did they do it? Where were the data sourced from?** 
+# 1: Rectangular data
 
+The most common type of data we'll see is rectangular data, which is organized into a table of rows and columns. If data come to us in another form we'll often want to make them rectangular.
 
+In the same directory as this `.rmd` file and the project file, there's a directory called `data`. Inside, there's a comma-separated values (CSV) file called `seattle_airbnb.csv`. This contains data about 100 Airbnb listings from Seattle. 
 
-[WRITE AN ANSWER HERE]
+These data come from Inside Airbnb, http://insideairbnb.com/. Go to the website and have a look at the About, Behind, and Get the Data pages. *Use what you read to answer the questions below. Just type your answers below the questions.*
+  
+  **Question 1.1: Who created these data sets?**  
+  
+  **Question 1.2: Why did they do it?**  
+  
+  **Question 1.3: Where were the data sourced from?**  
+  
+## 2: Setup
+  
+  R doesn't come with everything we need loaded by default. Before we do anything else, we need to load a *package*. Packages contain specialized functions and data that we can use to do nifty things. The package we'll use is called "tidyverse." It's a collection of packages for data manipulation, exploration, and visualization.  
 
+You can read more about the tidyverse here: https://www.tidyverse.org/
 
+If a package hasn't been installed on your machine, you'll need to install it. For instance, you'd type `install.packages("tidyverse")` into the *console*. You only need to do this once for each R installation, but in order to use a package, you have to load it. 
 
+Code chunks let us incorporate code into text documents like this one. They're very useful for creating interactive documents and for testing out new code. The output from a code chunk shows up right below it (and often also in the console). You can run the code in a chunk by pressing the green arrow int he top right of the chunk. You can also run just one line of code by placing your cursor on that line and pressing `CTL` plus `Return`.
 
-## Setup
-
-R doesn't come with everything we need loaded by default. Before we do anything else, we need to load a *package*. The package we'll use is called "tidyverse." You can read more about the tidyverse here: https://www.tidyverse.org/
-
-If a package hasn't been installed on your machine, you'll need to install it. For instance, you'd type `install.packages("tidyverse")`. 
-
-Run this chunk of code to load the tidyverse:
+**Question 2.1 Once you've completed installation, run this chunk of code to load the tidyverse:**
 
 ```{r}
 library(tidyverse)
 ```
 
-## Importing data
+
+
+## 3: Importing data
 
 To use data inside R, we first have to import, or *read*, that data into our environment.
 
@@ -49,58 +62,74 @@ To use data inside R, we first have to import, or *read*, that data into our env
 airbnb_data <- read_csv("data/seattle_airbnb.csv")
 ```
 
-When we do this, we assign the values of the data to a variable, `airbnb_data`, using the arrow (`<-`). The object we create is called a data frame.
+When we do this, we assign the values of the data to a variable, `airbnb_data`, using the arrow (`<-`). When you're typing inside of a code chunk (that's where the code goes), you can use `alt` plus `the minus key` to quickly type the arrow. The object we create is called a data frame.
 
-## Looking at the data
+**Question 3.1: What is the role of each component in the above line of code?**
+ - airbnb_data: the variable name we used for the data frame
+ - `<-` :
+ - read_csv() :
+ - "data/seattle_airbnb.csv" :
 
-You can print the data frame to the console by typing the name of the object:
 
-```{r}
-airbnb_data
-```
+## 4: Looking at the data
 
-You can also look at the entire data set using RStudio's built-in viewer: 
+You can print the data frame to the console by typing the name of the object. Our object was called 'airbnb_data.' 
+
+**Question 4.1 Go ahead and type that into the console.**
+
+You can also look at the entire data set using RStudio's built-in viewer. To use that, we use the function 'view().' We can run that command from the console, or from a code chunk like the one below: 
+
+**Question 4.2 Follow the instructions in the code block and run it**
 
 ```{r}
 # "un-comment" the line below this one, by removing the '#' and the space
 # View(airbnb_data)
 ```
 
-You can also look at parts of the data frame instead: 
+The 'head()' function shows you the first six rows of a data frame. 
+
+**Question 4.3 Use the head function in the code chunk below to show the first rows of the airbnb_data.**
 
 ```{r}
-head(airbnb_data)
+
 ```
 
-**Question: `head` shows the first 6 rows by default. Change the following code to show the first 10 rows:** 
+**Question 4.4: `head` shows the first 6 rows by default. Change the following code to show the first 10 rows:** 
 
 ```{r}
 head(airbnb_data, n = 6)
 ```
 
-**Question: What if you want to look at the *last* several rows of a data frame instead of the first several rows?**
+What if you want to look at the *last* several rows of a data frame instead of the first several rows?
 
-To find out, read the documentation for `head` by typing `?head` into the console.
+Let's read the documentation for `head` by typing `?head` into the console.
 
-```{r}
-# [TYPE YOUR ANSWER HERE, AND RUN IT]
-```
-
-You can extract a single column by name using `$`:
+**Question 4.5 Based on what you found out, show the last 5 rows of airbnb_data**
 
 ```{r}
-head(airbnb_data$name)
+
 ```
 
-# Hierarchical data
+
+You can extract a single column by name using `$`. Type the name of the dataframe (airbnb) first, then `$` and finally the name of the column. 
+
+**Question 4.6 Use `$` to display the 'price' column**
+
+```{r}
+
+```
+
+# 5: Hierarchical data
 
 Data isn't always a single, flat table. Sometimes it's nested or hierarchical.
 
-`colors.json` is a file in JSON format. This is a common format for web data. Open it up and have a look at it. You can read it into R using another package: 
+`colors.json` is a file in JSON format. This is a common format for web data. We'll need to load another package, 'jsonlite', in order to read it. *Type 'install.packages(jsonlite)' in the console to install it.*
+
+**Question 5.1 Change the code below so that we load the jsonlite package and make a new object called 'json_data' by using the read_json() function to read the file 'data/colors.json'.**
 
 ```{r}
-library(jsonlite)
-json_data <- read_json("data/colors.json")
+library(tidyverse)
+airbnb_data <- read_csv("data/seattle_airbnb.csv")
 ```
 
 When you do, it becomes a different type of R object, a *list*: 
@@ -115,10 +144,10 @@ It's a little trickier, but you can use `[[]]` and `$` to extract pieces of this
 json_data$colors[[5]]
 ```
 
-**Question: see if you can extract the hex code for red. Look at the output above for hints.**
+**Question 5.2: Display the information for the color red.**
 
 ```{r}
-# [TYPE YOUR ANSWER HERE, AND RUN IT]
+
 ```
 
 # Challenge: Excel worksheets
@@ -139,6 +168,16 @@ https://cran.r-project.org/web/packages/magick/vignettes/intro.html
 # image_flip(cat)
 ```
 
-# Turning in your assignment
+# Hints
 
-Press the "knit" button to produce an html file that will have all of your output. Please turn in **both** the Rmd and html files on Canvas.
+4.1 The console is the same place where we typed 'instal.packages' before. It should have a `>` and a cursor waiting for your input.
+
+4.4 You'll need to change the value of n from 6 to 10.
+
+5.1 Make sure you've installed the jsonlite package. Then your code should look like this:
+
+library(jsonlite)
+json_data <- read_json("data/colors.json")
+
+5.2 json_data$colors[[5]] gave us the info for 'yellow', so let's try changing the 5 to other numbers to see if we can find 'red'.  
+
