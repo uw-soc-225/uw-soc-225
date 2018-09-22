@@ -1,4 +1,4 @@
----
+d---
 title: "Data visualization and mapping"
 subtitle: "Soc 225: Data & Society"
 author: "[PUT YOUR NAME HERE]"
@@ -8,32 +8,49 @@ output:
     toc: true
 ---
 
+# 0: Lab Check-in
+
 For the first half of this lab, we'll use the `gapminder` data set. This example is adapted from Kieran Healy's book, *Data Visualization: A Practical Introduction*, chapters 3 and 4: http://socviz.co/
 
 For the second half, we'll use the Seattle Airbnb listings from Inside Airbnb.
 
-# Setup and data import
+** Question 0.1: Use the console to install the package 'gapminder' package, load that package and the tidyverse package.**
 
 ```{r}
-library(tidyverse)
-# install.packages("gapminder")
-library(gapminder)
 
-theme_set(theme_minimal())
-glimpse(gapminder)
 ```
+
+# 1 Visualizations with Covariation
+
+Bar charts and histograms are great at showing variation along one variable. However, we're often interesting at the relationship between two or more variables. That is, a bar chart or histogram shows the *variation* of a sigle variable. The visualizations we'll learn in the module show the *covariation* between variables.
+
+Before we start, let's take a look at the gapminder data
+
+** Question 1.1: Use glimpse to examine the gapminder data **
+```{r}
+
+```
+
+** Question 1.2: What's one variable that is continuous? What's one that's categorical? **
 
 Read about the origins of the `gapminder` data set by typing `?gapminder`, and by looking at the source of the data: https://www.gapminder.org/data/
 
-# Visualization: scatterplots
+## Scatterplots
 
 Scatterplots are a good way to visualize the relationship between two variables, and to look for outliers.
 
 ```{r}
-p <- 
-  ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) + 
-  geom_point()
-p
+theme_set(theme_minimal()) # remember that I like the minimal theme? I can set it as default
+p <-# I can use the assignment operator to save a plot!
+  ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) + # use the gapminder data, set x to the gdp and y to the life expectancy
+  geom_point() # plot points (x,y) for each country in the dataset
+p # by calling the object 'p' we can display the graph
+```
+
+** Question 1.3 Make a scatterplot comparing the population and the life expectancy, assign it to an object named 'q'**
+
+```{r}
+
 ```
 
 ## Scales
@@ -41,20 +58,28 @@ p
 To better see our data, we can transform the x-axis into a log scale.
 
 ```{r}
-p + scale_x_log10()
+p + # taking our old graph, the '+' lets us add to it
+  scale_x_log10() # add our scale
 ```
 
+** Question 1.4 add a log scale to your graph q **
+
+```{r}
+
+```
+
+** Question 1.5 what do you think accounts for the distinctive shape of your scatterplot? **
 
 ## Colors
 
-In addition to the x and y axes, another aesthetic available to use is `color`.
+In addition to the x and y axes, another aesthetic available to use is `color`. This meas we can look at how up to three variables change together!
 
-For example, we can color data points by continent: 
+For example, we can color data points by continent, a categorical variable: 
 
 ```{r}
-ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, color = continent)) + 
-  geom_point() + 
-  scale_x_log10()
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, color = continent)) + # same as p above but adding color
+  geom_point() + # plot the points
+  scale_x_log10() # add the same scale
 ```
 
 If you map a continuous/numeric variable onto color, `ggplot2` will pick a gradient scale: 
@@ -64,6 +89,19 @@ ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, color = log(pop))) +
   geom_point() + 
   scale_x_log10()
 ```
+
+** Question 1.6 Remake plot q by choosing a continuous variable to add colors **
+
+```{r}
+
+```
+
+** Question 1.7 Remake plot q by choosing a categorical variable to add colors that explain the interesting shapes **
+
+```{r}
+
+```
+
 
 ## Facets
 
@@ -80,55 +118,72 @@ ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) +
   facet_wrap(~continent) 
 ```
 
+** Question 1.8: Add a continent facet wrap to q **
 
-## Data transformation: `mutate`
+```{r}
+
+```
+
+
+# 2: Make New Columns: `mutate`
+
+The `mutate` verb is one of the most important. It allows you to add columns (variables) to your dataset. As its name suggests, the most common way of doing that is by adjusting, or mutating, existing variables.
 
 What if we wanted to look at *total* GDP, not just per capita GDP? To do this, we'd have to create a new variable, using the verb `mutate`. Total GDP is GDP per capita times population.
 
 ```{r}
-gapminder %>% 
-  filter(year == 2007) %>%
-  mutate(gdp = gdpPercap * pop) %>%
-  ggplot(aes(x = pop, y = gdp, color = continent)) + 
-  geom_point()
+gapminder %>% # take the gapminder data
+  filter(year == 2007) %>% # filter to the year 2007
+  mutate(gdp = gdpPercap * pop) %>% # make a new column 'gdp' which is the product of percapita gdp and population
+  ggplot(aes(x = pop, y = gdp, color = continent)) + # start a plot with the x axis as population and gdp as the y, color by contient
+  geom_point() # plot the points
 ```
 
 
-## Questions: Life expectancy over time
+# 3 Exercise: Life expectancy over time
 
-Instead of looking at the relationship between life expectancy and GDP, now we'll look at changes in life expectancy over time. 
+Instead of looking at the relationship between life expectancy and GDP, now we'll look at changes in life expectancy over time. You can use the last code block for all the questions.
 
-Create a plot where `x = year` and `y = lifeExp`. This time, use a new geom: `geom_line()` instead of `geom_point()`. 
+### 3.1 Create a plot where `x = year` and `y = lifeExp`. This time, use a new geom: `geom_line()` instead of `geom_point()`. 
+
+### 3.2 Try creating a line plot of life expectancy by year. Initially, it won't look quite right.  
+
+### 3.3 You need to tell the plot to group the lines by country. To do this, you'll need a new aesthetic, `group = country`. Incorporate this into your plot. Does it look more reasonable now?
+
+### 3.4 Finally, facet by continent. Does life expectancy seem to have increased over time everywhere? Do you see any dips or decreases? 
 
 ```{r}
-# write your code here!
+
 ```
 
-a. Try creating a line plot of life expectancy by year. Initially, it won't look quite right.  
 
-b. You need to tell the plot to group the lines by country. To do this, you'll need a new aesthetic, `group = country`. Incorporate this into your plot. Does it look more reasonable now?
+# 4 Maps
 
-c. Finally, facet by continent. Does life expectancy seem to have increased over time everywhere? Do you see any dips or decreases? 
-
-# Maps
-
-You can create geographical maps in R, using latitude and longitude data. This uses a new package called `leaflet` (https://rstudio.github.io/leaflet/), which you'll need to install. 
+You can create maps in R using latitude and longitude data. This uses a new package called `leaflet` (https://rstudio.github.io/leaflet/), which you'll need to install in the console. 
 
 The Inside Airbnb data has latitudes and longitudes for each listing, so we'll use that.
+
+## Question 4.1: Install leaflet, load it, and then read the file 'data/listings.csv' and name it airbnb_data
+
+```{r}
+
+```
+
 
 ## Points and popups
 
 `leaflet` relies on the pipe (`%>%`) to add layers to maps. 
 
 ```{r}
-# install.packages("leaflet")
-library(leaflet)
+leaflet(airbnb_data) %>% # begin by passing the data to leaflet
+  addTiles() %>% # add the map files to the plot, leaflet automattically uses the latitdue and longitude data to find the right map
+  addCircles(popup = ~name) # add circles for each listing, by adding the popup argument, we can click on a cirle to show the name
+```
 
-airbnb_data <- read_csv("data/listings.csv")
+**Question 4.1 Make a leaflet plot that only includes only listings with a price over $200 and shows the price when the circle is clicked**
 
-leaflet(airbnb_data) %>%
-  addTiles() %>%
-  addCircles(popup = ~name)
+```{r}
+
 ```
 
 ## Colors and legends: qualitative/categorical
@@ -136,19 +191,32 @@ leaflet(airbnb_data) %>%
 Colors are a bit less automatic than with `ggplot2`. You need to create a palette using one of the provided functions, and then use that palette for your data and the legend. 
 
 ```{r}
+# We're going to start by making a smaller dataframe to use for our visualization
+example_data <- airbnb_data %>% # assign the small dataframe the name 'example_data'
+  filter(neighbourhood == "University District") # filter the example data to only include listings from the U district
+ 
 # this palette is based on the type of room
-room_type_pal <- colorFactor("Set1", airbnb_data$room_type)
+room_type_pal <- colorFactor("Set1", example_data$room_type) # make a palette with the room types from the example data
 
-airbnb_data %>%
-  filter(neighbourhood == "University District") %>%
-  leaflet() %>%
-  addTiles() %>%
-  addCircles(popup = ~name, 
-             color = ~room_type_pal(room_type)) %>%
-  addLegend(pal = room_type_pal, values = ~room_type)
+leaflet(example_data) %>% # make a leaflet plot with our example data
+  addTiles() %>% # add the map tiels
+  addCircles(popup = ~name, # add circles which we can click to see the names
+             color = ~room_type_pal(room_type)) %>% # color the circles with our palette
+  addLegend(pal = room_type_pal, values = ~room_type) # add a legend so we know what's what
 ```
 
-## Questions: colors for a numeric variable
+
+
+**Question 4.1: Use the same code from above, but map a neighborhood group of your choice**
+
+```{r}
+
+```
+
+
+# 5 Exercise: Mapping Airbnb in Seattle
+
+### 5.1 Think about what varible you'd like to display in your map.
 
 You should use different color palettes for categorical vs numeric data. You've got a couple options for plotting numeric data:
 
@@ -156,45 +224,33 @@ You should use different color palettes for categorical vs numeric data. You've 
 - `colorBin`: bins by values
 - `colorQuantile`: bins by quantiles
 
+[Write your variable name here]
+
+### 5.2 Create a bar plot or histogram as appropriate to look at the distribution of your variable
+
 ```{r}
-# filter out outliers
-# remember, you should look at those outliers first!
-# and then **explain** why you're deciding to remove them
-# here, we might think that some of those large values are unreliable
-# they also make some of the scales harder to use and interpret
-new_airbnb_data <- 
-  airbnb_data %>%
-  filter(price <= 500)
 
-price_pal <- colorNumeric("RdPu", new_airbnb_data$price)
-
-## what if you used a quantile-based approach?
-## would you need to remove outliers in this case?
-# price_pal <-
-#   colorQuantile("RdPu", new_airbnb_data$price, n = 5)
-
-## uncomment this code, and use it as a scaffold 
-## for coloring the data points by price
-# leaflet(new_airbnb_data) %>%
-#   addTiles() %>%
-#   addCircles() %>%
-#   addLegend()
 ```
 
-a. How many outliers did you filter out? Does that seem reasonable to you, or misleading? 
+### 5.3 Are there values that seem like outliers? 
 
-b. Un-comment the skeleton of code above, and modify it to color the data points by price. Try both the value-based and quantile-based approaches. 
+Outliers are datapoints that seem very different from the rest of the data. For instance, if one listing costs 10x the average price, then a color palette using linear mapping will show that listing as one color and all the rest of the listings as another. In other words, outliers can make it hard to see important differences (they can cause other problems for analysis too). That might be a good reason to exclude those listings from our map. On the other hand, removing outliers might remove important data: don't we want the people looking at our visualization to know that there was a very expensive listing? Using a quantile palette is a way to include outliers but still show variation. 
 
-c. Look at the map and explore it. Name one area of the city that seems to have higher-than-average prices, and one area that seems to have lower-than-average prices.
+### 5.4 If there are outliers, do you think you should include them in your graph? Justify your answer.
 
-d. Which mapping of prices to colors---linear mapping by value or binning by quantile---do you think is more useful here, and why? There isn't a right answer.
+### 5.5 Create a new data frame for the rest of the exercise, filtering as necessary
 
-# Challenge: Apply what you've learned
+### 5.6 Use that data frame to create a color palette for your variable
 
-You've learned a variety of techniques for data transformation and visualization: 
+### 5.7 Create a leaflet plot using your new data set
 
-- filtering and mutating
-- `geom_point`, `geom_line`, `geom_bar`, and `geom_histogram`
-- colors, facets, and groups
+```{r}
 
-Apply these tools to the Airbnb data set to visualize price and/or review information. Break the data down in some informative way, e.g. by neighbourhood group or room type. Try a few different iterations, and interpret what you see. 
+```
+
+
+
+# Hints:
+1.2 <int> and <dbl> are number columns, <fct> are 'factor' columns
+
+4.1 remember that you can use unique(some_data$some_column) to list all of the unique values of some column in some data frame
