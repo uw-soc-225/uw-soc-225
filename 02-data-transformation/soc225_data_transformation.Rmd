@@ -7,51 +7,86 @@ output:
   html_document:
     toc: true
 ---
+# 0: Lab Check-in
 
 Today, we'll continue working with the Inside Airbnb data. This time, we'll use the full data set of listings for Seattle. 
 
 Today's exercises are based off of Chapter 5 of *R for Data Science*: http://r4ds.had.co.nz/transform.html
 
-# Setup
 
-```{r}
-library(tidyverse)
-```
-
-# Review: reading data
-
-Once you've loaded the `tidyverse` package, the `read_csv` function will read data into R.
-
-## Question 1: read the data
-
+**Question 0.1: Use the code block to produce the following code**
+First, load the `tidyverse` package using the `library()` function.
+Once you've loaded the `tidyverse` package, the `read_csv()` function will read data into R.
 Read the `listings.csv` file from the `data/` folder into R and assign it to the variable name `airbnb_data` using the `<-` operator. 
 
 ```{r}
-# write your code here
+
 ```
+
+# 1 Exploring the Data
 
 This data frame has more variables (= columns) and observations (= rows) than last week's data set. You can get an overview of the different columns using the `glimpse` function:
 
 ```{r}
-glimpse(airbnb_data)
+glimpse(airbnb_data) # display basic information about the data
 ```
 
-# Data transformation
+Sometimes we'll just want to get the names of the columns. We can use the `names()` function to do that.
 
-## Pipes
 
-First, let's practice piping! This is how we apply a series of transformations to data.
+**Question 1.1: Display the column names of airbnb_data**
+
+```{r}
+
+```
+
+
+**Question 1.2: Interpret the output from glimpse: what kind of information does it give you?**
+
+# 2: Data transformation
+
+## Pipes %>%
+
+The pipe, `%>%`, is an extremely useful function that takes information from an element or function on the left and passes it to a function on the right. It lets you complete multiple operations in a single line. If you were making a whole bunch of peanut butter and pickle sandwiches, you could do it this way:
+
+slices <- Cut(object = bread)
+smeared <- Smear(object = slices, condiment = 'peanut_butter')
+pickled <- Apply(object = smeared, what = 'pickles', method = 'carefully')
+sandwich <- Close(object = pickled)
+
+That's annoying because we're really doing all of those things to the same object. I don't really think of my partially made sandwich as 'smeared' or 'pickled'. Instead, I do all of those steps together, and keep working on the same object as I apply each transformation. That's what the pipe does for us in R. The same sandwich code would look like this:
+
+bread %>% Cut() %>% Smear(condiment = 'peanut_butter') %>% Apply(what = 'pickles', method = 'carefully') %>% close()
+
+You might notice that a key difference here is that the functions have lost their first arguments. That's becuase the pipe automatically takes the output from the left and uses it as the first arugment of the function to the right. So in the operation above, 'Cut' takes bread as its argument, 'Smear' takes Cut(bread) as its first argument, 'Apply' takes Smear(Cut(Bread), condiment = 'peanut_butter') as its first argument and so on.
+
+Unfortunetly, we don't have the technology yet to make real sandwiches this way. Instead, we'll be doing the same thing to data.
+
+Let's practice piping!
 
 For example, to look at the first 6 unique values of the `neighbourhood` variable: 
 
 ```{r}
-airbnb_data$neighbourhood %>% unique() %>% head()
+# instead of
+head(unique(airbnb_data$neighbourhood)) # show the top sice unique neighborhoods
 
-# same as 
-# head(unique(airbnb_data$neighbourhood))
+# we can write
+airbnb_data$neighbourhood %>% unique() %>% head() # show the top sice unique neighborhoods
+
 ```
 
-## Verbs: filter
+**Question 2.1: Use the pipe to show the first 20 listing names**
+
+```{r}
+
+```
+
+
+# 3: Verbs 
+
+Now that we can pipe, we can start putting together different functions to perform multi-step analysis. In the tidyverse, we can think of most functions as 'verbs' whose names describe what they do. All* of them take a data frame as their first argument, so they're great for piping. We'll learn and practice using a few basic tidyverse verbs (mostly from the package 'dplyr' contined in the tidyverse), but there are many more. Remember that our course material offers a starting point! Coding is about facing new problems, making mistakes, using internet resources like Stack Exchange, and solving those problems (but your classmates and I are also here to help).
+
+## filter
 
 `filter` filters down to a subset of the data by **row**.
 
@@ -62,47 +97,54 @@ You can filter by values in one or more columns, using comparison operators like
 - `>`, `<`, `>=`, `<=`
 - `%in%`
 
+Basically you can put anything into filter which will produce a logical vector (a list of TRUE and FALSE).
+
 This will give us the observations in the "Central Area" neighbourhood group:
 
 ```{r}
-airbnb_data %>%
-  filter(neighbourhood_group == "Central Area")
+airbnb_data %>% # take the airbnb data
+  filter(neighbourhood_group == "Central Area") # filter to listings in the central area
 ```
 
 These are the 696 listings in the Central Area.
 
 What about multiple criteria? For instance, if we only want to see listings in the Central Area with at least 10 reviews: 
-
 ```{r}
 # `&` means "and", `|` means "or"
-airbnb_data %>%
-  filter(neighbourhood_group == "Central Area" & number_of_reviews >= 10)
+airbnb_data %>% # take the airbnb data
+  # filter to listings in the central area with more than ten reviews
+  filter(neighbourhood_group == "Central Area" & number_of_reviews >= 10) 
 ```
 
 There are 444 such listings.
 
-### Question 2: How many listings?
+** Question 3.1: How many listings? **
 
 How many listings are there in the UDistrict? Write code to filter the data set only to listings in the "University District" `neighbourhood_group`.
 
 ```{r}
-# write your code here
+
 ```
 
-Write the number of listings here:
-
-## Verbs: select
-
-`select` selects particular **columns**, by name: 
+** Bonus: How many units are there in 'Other neighborhoods' that have a price less than $70 a night?**
 
 ```{r}
-airbnb_data %>%
-  head(100) %>%
-  select(id, name, neighbourhood_group, neighbourhood, 
-         price, number_of_reviews) 
+
 ```
 
-This is how I generated the data for Week 1.
+
+## select
+
+`select` selects particular **columns** by name: 
+
+```{r}
+airbnb_data %>% # take airbnb data
+  head(100) %>% # take the first 100 listings
+  select(id, name, neighbourhood_group, neighbourhood, 
+         price, number_of_reviews) # select only these columns
+```
+
+This is how we generated the data for Week 1.
 
 You can use `-` to remove particular columns, too:
 
@@ -111,58 +153,55 @@ airbnb_data %>%
   select(-latitude, -longitude)
 ```
 
-## Verbs: arrange
+** Question 3.2: Use select to show only the prices**
+
+```{r}
+
+```
+
+** Question 3.3: Use filter and select to display the prices and names of the listings with more than 10 reviews**
+
+```{r}
+
+```
+
+## arrange
 
 `arrange` reorders a data set by one or more columns, in ascending or descending order.
 
 Let's order the data by price, cheapest first:
 
 ```{r}
-airbnb_data %>%
-  select(id, name, host_name, 
-         neighbourhood_group, neighbourhood, 
-         price, number_of_reviews) %>%
-  filter(price > 0) %>%
-  arrange(price)
+airbnb_data %>% # take the airbnb data
+  select(id, name, host_name, neighbourhood, 
+         price, number_of_reviews) %>% # select only some columns
+  filter(price > 0) %>% # exclude negative prices
+  arrange(price) # arrange by acsending price order
 ```
 
 Most expensive first: 
 
 ```{r}
-airbnb_data %>%
-  select(id, name, host_name, 
-         neighbourhood_group, neighbourhood, 
-         price, number_of_reviews) %>%
-  arrange(desc(price))
+airbnb_data %>% # take the airbnb data
+  select(id, name, host_name, neighbourhood, 
+         price, number_of_reviews) %>% # select only some columns
+  filter(price > 0) %>% # exclude negative prices
+  arrange(desc(price)) # arrange by descending price order
 ```
 
-### Question 3: which listings have the most reviews?
+** Question 3.4: which listings have the most reviews? **
 
-Show the listings in the UDistrict that have the most reviews (`arrange` by `number_of_reviews` in `desc` order):
+Show the listings in the UDistrict that have the most reviews:
 
 ```{r}
-# write your code here
+
 ```
 
-# Data visualization
+# 4: Data visualization
+
+Now that we can adjust what data we're looking at with some verbs, we can start making visualizations. Not only do these look cool, but they're a great way to get a sense for big patterns in your data.
 
 We'll start by plotting a single variable, using bar charts and histograms.
-
-## Bar charts
-
-There are three types of rooms: 
-
-```{r}
-unique(airbnb_data$room_type)
-```
-
-Let's plot how many there are of each using a bar chart. Bar charts are for *categorical* values. 
-
-```{r}
-airbnb_data %>% 
-  ggplot(aes(x = room_type)) + 
-  geom_bar()
-```
 
 ## Histograms
 
@@ -174,28 +213,50 @@ airbnb_data %>%
   geom_histogram()
 ```
 
-### Question 4: histogram of prices
-
-Make a histogram of prices. When you do this, you'll see that it's hard to make sense of, because a few prices are really large.
+** Question 4.1: Make a histogram of prices. When you do this, you'll see that it's hard to make sense of, because a few prices are really large. **
 
 To get a better look at the distribution of prices, filter out large values before plotting (e.g. `price <= 500`).
 
+## Bar charts
+
+We can see that there are three types of rooms: 
 
 ```{r}
-# write your code here
+unique(airbnb_data$room_type)
 ```
 
-# Challenge question: making a plot legible
-
-The code below makes a bar plot of `neighbourhood_group`---but you can't read the neighborhood names! 
-
-There are a couple ways to fix this. For instance, you could flip the x and y axes. Or, you could angle the text of the names. Try to figure out how to do one of those things, and modify the code below accordingly.
+Let's plot how many listings there are of from each neighborhood group using a bar chart. Bar charts are for *categorical* values. 
 
 ```{r}
-airbnb_data %>%
-  ggplot(aes(x = neighbourhood_group)) +
-  geom_bar() 
+airbnb_data %>% # take airbnb data
+  ggplot(aes(x = neighbourhood_group)) + # start a plot and set the aesthetics with the x axis the neighborhood groups
+  geom_bar() # make a bar chart
 ```
+
+By adding another line of code, we can make the labels more legible:
+
+```{r}
+airbnb_data %>% # take airbnb data
+  ggplot(aes(x = neighbourhood_group)) + # start a plot and set the aesthetics with the x axis the neighborhood groups
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))+ # adjust the labels so they're legible
+  geom_bar() # make a bar chart
+```
+
+** Question 4.2 Make a bar chart showing the number of listings for each room type **
+
+```{r}
+# consider adjusting the text angle as necessary
+
+```
+
+** Question 4.3 Would we want to use a bar chart or a histogram to visualize the number of reviews? **
+
+** Question 4.4 Make the appropriate visualization **
+
+```{r}
+
+```
+
 
 # Just for fun: ggplot themes
 
@@ -217,3 +278,17 @@ airbnb_data %>%
 #   geom_histogram() +
 #   theme_wsj()
 ```
+
+*most
+
+# Hints
+1.2 Consider the this example output: $, 'id', '<int>', 2318, 4291, 5682, 6606
+What do you think each element means?
+
+2.1 You can use the same format as in the example, but you'll need to change 'neighbourhood' to 'name' and add 'n=20' to the inside of the `head()` function.
+
+3.3 First filter to listings with more than 10 reviews, then select the name and price
+
+3.4 Try to `arrange` by `number_of_reviews` in `desc` order
+
+3.5 Copy the code from the previous bar chart and change neighborhood_group to room_type.
