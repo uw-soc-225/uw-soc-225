@@ -7,14 +7,15 @@ output:
   html_document:
     toc: true
 ---
+
 # 0: Lab Check-in
 
 Today, we'll continue working with the Inside Airbnb data. This time, we'll use the full data set of listings for Seattle. 
 
 Today's exercises are based off of Chapter 5 of *R for Data Science*: http://r4ds.had.co.nz/transform.html
 
-
 **Question 0.1: Use the code block to produce the following code**
+
 First, load the `tidyverse` package using the `library()` function.
 Once you've loaded the `tidyverse` package, the `read_csv()` function will read data into R.
 Read the `listings.csv` file from the `data/` folder into R and assign it to the variable name `airbnb_data` using the `<-` operator. 
@@ -23,9 +24,9 @@ Read the `listings.csv` file from the `data/` folder into R and assign it to the
 
 ```
 
-# 1 Exploring the Data
+# 1: Exploring the Data
 
-This data frame has more variables (= columns) and observations (= rows) than last week's data set. You can get an overview of the different columns using the `glimpse` function:
+This data frame has more variables (= columns) and observations (= rows) than last lab's data set. You can get an overview of the different columns using the `glimpse` function:
 
 ```{r}
 glimpse(airbnb_data) # display basic information about the data
@@ -49,18 +50,27 @@ Sometimes we'll just want to get the names of the columns. We can use the `names
 
 The pipe, `%>%`, is an extremely useful function that takes information from an element or function on the left and passes it to a function on the right. It lets you complete multiple operations in a single line. If you were making a whole bunch of peanut butter and pickle sandwiches, you could do it this way:
 
+```
 slices <- Cut(object = bread)
 smeared <- Smear(object = slices, condiment = 'peanut_butter')
 pickled <- Apply(object = smeared, what = 'pickles', method = 'carefully')
 sandwich <- Close(object = pickled)
+```
 
 That's annoying because we're really doing all of those things to the same object. I don't really think of my partially made sandwich as 'smeared' or 'pickled'. Instead, I do all of those steps together, and keep working on the same object as I apply each transformation. That's what the pipe does for us in R. The same sandwich code would look like this:
 
-bread %>% Cut() %>% Smear(condiment = 'peanut_butter') %>% Apply(what = 'pickles', method = 'carefully') %>% close()
+```
+sandwich <- 
+  bread %>% 
+  Cut() %>% 
+  Smear(condiment = 'peanut_butter') %>% 
+  Apply(what = 'pickles', method = 'carefully') %>% 
+  Close()
+```
 
 You might notice that a key difference here is that the functions have lost their first arguments. That's becuase the pipe automatically takes the output from the left and uses it as the first arugment of the function to the right. So in the operation above, 'Cut' takes bread as its argument, 'Smear' takes Cut(bread) as its first argument, 'Apply' takes Smear(Cut(Bread), condiment = 'peanut_butter') as its first argument and so on.
 
-Unfortunetly, we don't have the technology yet to make real sandwiches this way. Instead, we'll be doing the same thing to data.
+Unfortunately, we don't have the technology yet to make real sandwiches this way. Instead, we'll be doing the same thing to data.
 
 Let's practice piping!
 
@@ -68,10 +78,10 @@ For example, to look at the first 6 unique values of the `neighbourhood` variabl
 
 ```{r}
 # instead of
-head(unique(airbnb_data$neighbourhood)) # show the top sice unique neighborhoods
+head(unique(airbnb_data$neighbourhood)) # show the top six unique neighborhoods
 
 # we can write
-airbnb_data$neighbourhood %>% unique() %>% head() # show the top sice unique neighborhoods
+airbnb_data$neighbourhood %>% unique() %>% head() # show the top six unique neighborhoods
 
 ```
 
@@ -109,6 +119,7 @@ airbnb_data %>% # take the airbnb data
 These are the 696 listings in the Central Area.
 
 What about multiple criteria? For instance, if we only want to see listings in the Central Area with at least 10 reviews: 
+
 ```{r}
 # `&` means "and", `|` means "or"
 airbnb_data %>% # take the airbnb data
@@ -118,7 +129,7 @@ airbnb_data %>% # take the airbnb data
 
 There are 444 such listings.
 
-** Question 3.1: How many listings? **
+**Question 3.1: How many listings?**
 
 How many listings are there in the UDistrict? Write code to filter the data set only to listings in the "University District" `neighbourhood_group`.
 
@@ -126,7 +137,7 @@ How many listings are there in the UDistrict? Write code to filter the data set 
 
 ```
 
-** Bonus: How many units are there in 'Other neighborhoods' that have a price less than $70 a night?**
+**Bonus: How many units are there in 'Other neighborhoods' that have a price less than $70 a night?**
 
 ```{r}
 
@@ -144,7 +155,7 @@ airbnb_data %>% # take airbnb data
          price, number_of_reviews) # select only these columns
 ```
 
-This is how we generated the data for Week 1.
+This is how we generated the data for Lab 1.
 
 You can use `-` to remove particular columns, too:
 
@@ -153,13 +164,13 @@ airbnb_data %>%
   select(-latitude, -longitude)
 ```
 
-** Question 3.2: Use select to show only the prices**
+**Question 3.2: Use select to show only the prices**
 
 ```{r}
 
 ```
 
-** Question 3.3: Use filter and select to display the prices and names of the listings with more than 10 reviews**
+**Question 3.3: Use filter and select to display the prices and names of the listings with more than 10 reviews**
 
 ```{r}
 
@@ -175,8 +186,8 @@ Let's order the data by price, cheapest first:
 airbnb_data %>% # take the airbnb data
   select(id, name, host_name, neighbourhood, 
          price, number_of_reviews) %>% # select only some columns
-  filter(price > 0) %>% # exclude negative prices
-  arrange(price) # arrange by acsending price order
+  filter(price > 0) %>% # exclude prices of $0 or less
+  arrange(price) # arrange by ascending price order
 ```
 
 Most expensive first: 
@@ -185,11 +196,11 @@ Most expensive first:
 airbnb_data %>% # take the airbnb data
   select(id, name, host_name, neighbourhood, 
          price, number_of_reviews) %>% # select only some columns
-  filter(price > 0) %>% # exclude negative prices
+  filter(price > 0) %>% # exclude prices of $0 or less
   arrange(desc(price)) # arrange by descending price order
 ```
 
-** Question 3.4: which listings have the most reviews? **
+**Question 3.4: which listings have the most reviews?**
 
 Show the listings in the UDistrict that have the most reviews:
 
@@ -213,7 +224,7 @@ airbnb_data %>%
   geom_histogram()
 ```
 
-** Question 4.1: Make a histogram of prices. When you do this, you'll see that it's hard to make sense of, because a few prices are really large. **
+**Question 4.1: Make a histogram of prices. When you do this, you'll see that it's hard to make sense of, because a few prices are really large.**
 
 To get a better look at the distribution of prices, filter out large values before plotting (e.g. `price <= 500`).
 
@@ -238,9 +249,20 @@ By adding another line of code, we can make the labels more legible:
 ```{r}
 airbnb_data %>% # take airbnb data
   ggplot(aes(x = neighbourhood_group)) + # start a plot and set the aesthetics with the x axis the neighborhood groups
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))+ # adjust the labels so they're legible
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) + # adjust the labels so they're legible
   geom_bar() # make a bar chart
 ```
+
+Finally, it's a good idea to give every plot a *title*, to tell people what it's about. 
+
+```{r}
+airbnb_data %>% 
+  ggplot(aes(x = neighbourhood_group)) + 
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+  geom_bar() +
+  labs(title = "Airbnb listings in Seattle by neighborhood group")
+```
+
 
 ** Question 4.2 Make a bar chart showing the number of listings for each room type **
 
@@ -249,9 +271,9 @@ airbnb_data %>% # take airbnb data
 
 ```
 
-** Question 4.3 Would we want to use a bar chart or a histogram to visualize the number of reviews? **
+**Question 4.3 Would we want to use a bar chart or a histogram to visualize the number of reviews?**
 
-** Question 4.4 Make the appropriate visualization **
+**Question 4.4 Make the appropriate visualization**
 
 ```{r}
 
@@ -279,13 +301,12 @@ airbnb_data %>%
 #   theme_wsj()
 ```
 
-*most
-
 # Hints
+
 1.2 Consider the this example output: $, 'id', '<int>', 2318, 4291, 5682, 6606
 What do you think each element means?
 
-2.1 You can use the same format as in the example, but you'll need to change 'neighbourhood' to 'name' and add 'n=20' to the inside of the `head()` function.
+2.1 You can use the same format as in the example, but you'll need to change 'neighbourhood' to 'name' and add 'n = 20' to the inside of the `head()` function.
 
 3.3 First filter to listings with more than 10 reviews, then select the name and price
 
