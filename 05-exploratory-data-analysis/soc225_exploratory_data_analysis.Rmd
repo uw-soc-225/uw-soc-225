@@ -35,7 +35,7 @@ theme_set(theme_minimal())
 
 # Data Set 1: COMPAS recidivism scores
 
-ProPublica wrote a story called "Machine Bias" about the COMPAS algorithm, which predicts recidivism and is used to guide criminal sentencing: https://www.propublica.org/article/machine-bias-risk-assessments-in-criminal-sentencing
+ProPublica wrote a story called "Machine Bias" about the COMPAS algorithm, which is meant to predict recidivism, or how likely it is that someone previously convicted of a crime will break the law again. COMPAS is used to guide criminal sentencing: https://www.propublica.org/article/machine-bias-risk-assessments-in-criminal-sentencing
 
 They did a statistical analysis of racial disparities and wrote up those results here: https://www.propublica.org/article/how-we-analyzed-the-compas-recidivism-algorithm
 

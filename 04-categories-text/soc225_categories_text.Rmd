@@ -8,6 +8,15 @@ output:
     toc: true
 ---
 
+# Goals
+
+- Understand different data types
+- Move between categorical and other types of data
+- Locate keywords in texts
+- Use regular expressions to manipulate text data
+
+
+
 # Categorical data
 
 ```{r}
