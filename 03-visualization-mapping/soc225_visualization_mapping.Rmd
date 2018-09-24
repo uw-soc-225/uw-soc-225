@@ -1,4 +1,4 @@
-d---
+---
 title: "Data visualization and mapping"
 subtitle: "Soc 225: Data & Society"
 author: "[PUT YOUR NAME HERE]"
@@ -27,6 +27,7 @@ Bar charts and histograms are great at showing variation along one variable. How
 Before we start, let's take a look at the gapminder data
 
 ** Question 1.1: Use glimpse to examine the gapminder data **
+
 ```{r}
 
 ```
@@ -41,9 +42,11 @@ Scatterplots are a good way to visualize the relationship between two variables,
 
 ```{r}
 theme_set(theme_minimal()) # remember that I like the minimal theme? I can set it as default
-p <-# I can use the assignment operator to save a plot!
+
+p <- # I can use the assignment operator to save a plot!
   ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) + # use the gapminder data, set x to the gdp and y to the life expectancy
   geom_point() # plot points (x,y) for each country in the dataset
+
 p # by calling the object 'p' we can display the graph
 ```
 
@@ -72,7 +75,7 @@ p + # taking our old graph, the '+' lets us add to it
 
 ## Colors
 
-In addition to the x and y axes, another aesthetic available to use is `color`. This meas we can look at how up to three variables change together!
+In addition to the x and y axes, another aesthetic available to use is `color`. This means we can look at how up to three variables change together!
 
 For example, we can color data points by continent, a categorical variable: 
 
@@ -125,7 +128,7 @@ ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) +
 ```
 
 
-# 2: Make New Columns: `mutate`
+# 2: Make new columns: `mutate`
 
 The `mutate` verb is one of the most important. It allows you to add columns (variables) to your dataset. As its name suggests, the most common way of doing that is by adjusting, or mutating, existing variables.
 
@@ -144,26 +147,31 @@ gapminder %>% # take the gapminder data
 
 Instead of looking at the relationship between life expectancy and GDP, now we'll look at changes in life expectancy over time. You can use the last code block for all the questions.
 
-### 3.1 Create a plot where `x = year` and `y = lifeExp`. This time, use a new geom: `geom_line()` instead of `geom_point()`. 
+## 3.1: Line plot of life expectancy by year 
 
-### 3.2 Try creating a line plot of life expectancy by year. Initially, it won't look quite right.  
+**Create a plot where `x = year` and `y = lifeExp`.** This time, use a new geom: `geom_line()` instead of `geom_point()`. Initially, it won't look quite right.  
 
-### 3.3 You need to tell the plot to group the lines by country. To do this, you'll need a new aesthetic, `group = country`. Incorporate this into your plot. Does it look more reasonable now?
 
-### 3.4 Finally, facet by continent. Does life expectancy seem to have increased over time everywhere? Do you see any dips or decreases? 
+## 3.2: The `group` aesthetic 
+
+**You need to tell the plot to group the lines by country.** To do this, you'll need a new aesthetic, `group = country`. Incorporate this into your plot. Does it look more reasonable now?
+
+## 3.3: Facet and interpret
+
+**Finally, facet by continent.** Does life expectancy seem to have increased over time everywhere? Do you see any dips or decreases? 
 
 ```{r}
 
 ```
 
 
-# 4 Maps
+# 4: Maps
 
 You can create maps in R using latitude and longitude data. This uses a new package called `leaflet` (https://rstudio.github.io/leaflet/), which you'll need to install in the console. 
 
 The Inside Airbnb data has latitudes and longitudes for each listing, so we'll use that.
 
-## Question 4.1: Install leaflet, load it, and then read the file 'data/listings.csv' and name it airbnb_data
+**Question 4.1: Install leaflet, load it, and then read the file 'data/listings.csv' and name it airbnb_data**
 
 ```{r}
 
@@ -180,7 +188,7 @@ leaflet(airbnb_data) %>% # begin by passing the data to leaflet
   addCircles(popup = ~name) # add circles for each listing, by adding the popup argument, we can click on a cirle to show the name
 ```
 
-**Question 4.1 Make a leaflet plot that only includes only listings with a price over $200 and shows the price when the circle is clicked**
+**Question 4.2: Make a leaflet plot that only includes only listings with a price over $200 and shows the price when the circle is clicked**
 
 ```{r}
 
@@ -192,14 +200,15 @@ Colors are a bit less automatic than with `ggplot2`. You need to create a palett
 
 ```{r}
 # We're going to start by making a smaller dataframe to use for our visualization
-example_data <- airbnb_data %>% # assign the small dataframe the name 'example_data'
+example_data <- 
+  airbnb_data %>% # assign the small dataframe the name 'example_data'
   filter(neighbourhood == "University District") # filter the example data to only include listings from the U district
  
 # this palette is based on the type of room
 room_type_pal <- colorFactor("Set1", example_data$room_type) # make a palette with the room types from the example data
 
 leaflet(example_data) %>% # make a leaflet plot with our example data
-  addTiles() %>% # add the map tiels
+  addTiles() %>% # add the map tiles
   addCircles(popup = ~name, # add circles which we can click to see the names
              color = ~room_type_pal(room_type)) %>% # color the circles with our palette
   addLegend(pal = room_type_pal, values = ~room_type) # add a legend so we know what's what
@@ -207,50 +216,105 @@ leaflet(example_data) %>% # make a leaflet plot with our example data
 
 
 
-**Question 4.1: Use the same code from above, but map a neighborhood group of your choice**
+**Question 4.3: Use the same code from above, but map a neighborhood group of your choice**
 
 ```{r}
 
 ```
+
+
+## Colors and legends: numeric/continuous
+
+You should use different color palettes for categorical vs numeric data. You've got a couple options for plotting numeric data:
+
+- `colorNumeric`: linear mapping of numbers onto a color gradient. For example, `colorNumeric("RdPu", data$variable)`.
+
+- `colorBin`: bins by values, so each color spans the same numeric range. For example, `colorBin("RdPu", data$variable, bins = 5)`.  
+
+- `colorQuantile`: bins by quantiles, so each color has the same number of data points. For example, `colorQuantile("RdPu", data$variable, n = 5)`.
+
+The examples above use a red-purple gradient ("RdPu") as the color palette. Type `RColorBrewer::brewer.pal.info` into your console for a full list of possible palettes.
+
+```{r}
+example_data <- 
+  airbnb_data %>% 
+  filter(neighbourhood == "University District") 
+
+price_pal <- colorNumeric("RdPu", example_data$price)
+
+leaflet(example_data) %>%
+  addTiles() %>%
+  addCircles(popup = ~name, 
+             color = ~price_pal(price)) %>%
+  addLegend(pal = price_pal, values = ~price)
+```
+
+**Question 4.4: Use the same code from above, but make a palette based on quantiles instead.**
+
+```{r}
+
+```
+
+**Question 4.5: Compare the two maps of prices in the UDistrict. Which mapping of prices to colors---linear mapping by value or binning by quantile---do you think is more useful here, and why? There isn't a right answer.**
+
+
+
 
 
 # 5 Exercise: Mapping Airbnb in Seattle
 
-### 5.1 Think about what varible you'd like to display in your map.
+## 5.1: Choose a variable
 
-You should use different color palettes for categorical vs numeric data. You've got a couple options for plotting numeric data:
-
-- `colorNumeric`: linear mapping
-- `colorBin`: bins by values
-- `colorQuantile`: bins by quantiles
+**Think about what variable you'd like to display in your map.**
 
 [Write your variable name here]
 
-### 5.2 Create a bar plot or histogram as appropriate to look at the distribution of your variable
+
+## 5.2: Plot the distribution 
+
+**Create a bar plot or histogram as appropriate to look at the distribution of your variable**
 
 ```{r}
 
 ```
 
-### 5.3 Are there values that seem like outliers? 
+## 5.3 Are there values that seem like outliers? 
 
-Outliers are datapoints that seem very different from the rest of the data. For instance, if one listing costs 10x the average price, then a color palette using linear mapping will show that listing as one color and all the rest of the listings as another. In other words, outliers can make it hard to see important differences (they can cause other problems for analysis too). That might be a good reason to exclude those listings from our map. On the other hand, removing outliers might remove important data: don't we want the people looking at our visualization to know that there was a very expensive listing? Using a quantile palette is a way to include outliers but still show variation. 
+Outliers are data points that seem very different from the rest of the data. For instance, if one listing costs 10x the average price, then a color palette using linear mapping will show that listing as one color and all the rest of the listings as another. In other words, outliers can make it hard to see important differences (they can cause other problems for analysis too). That might be a good reason to exclude those listings from our map. On the other hand, removing outliers might remove important data: don't we want the people looking at our visualization to know that there was a very expensive listing? Using a quantile palette is a way to include outliers but still show variation. 
 
-### 5.4 If there are outliers, do you think you should include them in your graph? Justify your answer.
+A couple reasons to think about data in this way: 
 
-### 5.5 Create a new data frame for the rest of the exercise, filtering as necessary
+- it's part of understanding **patterns and distributions** in your data
+- it helps you think about **data quality and potential flaws** in your data
+- it makes you articulate your **choices and goals** when you present your data 
 
-### 5.6 Use that data frame to create a color palette for your variable
+## 5.4: Including outliers 
 
-### 5.7 Create a leaflet plot using your new data set
+**If there are outliers, do you think you should include them in your graph? Justify your answer.**
+
+
+
+All of the subsequent code can be written in the code chunk below.
+
+## 5.5: Create a data frame
+
+**Create a new data frame for the rest of the exercise, filtering as necessary**
+
+## 5.6: Create a color palette
+
+**Use that data frame to create a color palette for your variable**
+
+## 5.7: Create a leaflet map 
+
+**Create a leaflet plot using your new data set**
 
 ```{r}
 
 ```
-
 
 
 # Hints:
+
 1.2 <int> and <dbl> are number columns, <fct> are 'factor' columns
 
 4.1 remember that you can use unique(some_data$some_column) to list all of the unique values of some column in some data frame
