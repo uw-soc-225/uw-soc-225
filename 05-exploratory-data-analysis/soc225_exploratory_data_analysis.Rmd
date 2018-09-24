@@ -8,7 +8,13 @@ output:
     toc: true
 ---
 
-# Introduction
+# Goals
+- Understand two applications of exploratory data analysis
+- Apply the skills we've learned so far to analyze some real-world data sets
+
+# 0: Lab Check-in
+
+# 1: Exploratory Data Analysis
 
 Exploratory data analysis, especially data visualization, is a way of understanding patterns and uncertainty in a data set. You can look at variation in the distribution of a single variable, and/or covariation across multiple variables. 
 
@@ -23,71 +29,77 @@ Today's exercises are inspired by these chapters:
 - Chapters 5 and 6 of Data Visualization: A Practical Introduction
   - http://socviz.co/workgeoms.html
   - http://socviz.co/modeling.html
+  
 
-# Setup
+# 2: COMPAS recidivism scores  
 
-Remember, most of the commands you use are in the various packages that are part of the tidyverse. Make sure to load the tidyverse (`library(tidyverse)`) if a command isn't found!
+ProPublica wrote a story called "Machine Bias" about the COMPAS algorithm, which is meant to predict recidivism, or how likely it is that someone previously convicted of a crime will break the law again. COMPAS is used to guide criminal sentencing: https://www.propublica.org/article/machine-bias-risk-assessments-in-criminal-sentencing  
 
-```{r}
-library(tidyverse)
-theme_set(theme_minimal())
-```
+They did a statistical analysis of racial disparities and wrote up those results here: https://www.propublica.org/article/how-we-analyzed-the-compas-recidivism-algorithm  
 
-# Data Set 1: COMPAS recidivism scores
+They've released their data and code publicly on GitHub, which is good practice for data journalism and data science: https://github.com/propublica/compas-analysis  
 
-ProPublica wrote a story called "Machine Bias" about the COMPAS algorithm, which is meant to predict recidivism, or how likely it is that someone previously convicted of a crime will break the law again. COMPAS is used to guide criminal sentencing: https://www.propublica.org/article/machine-bias-risk-assessments-in-criminal-sentencing
+Look through the article and use it to answer these questions.  
+  
+** Question 2.1: What's the main take home for this article? What do they want readers to understand? **  
 
-They did a statistical analysis of racial disparities and wrote up those results here: https://www.propublica.org/article/how-we-analyzed-the-compas-recidivism-algorithm
+** Question 2.2: How was data important to the work these Journalists did? **  
 
-They've released their data and code publicly on GitHub, which is good practice for data journalism and data science: https://github.com/propublica/compas-analysis
+** Question 2.3: Interpret the charts labeled "Black Defendents' Risk Scores" and "White Defendents' Risk Scores." What is the message of those visualization? If I told you that the authors used ggplot to make them, what 'geom' function do you think they used? Why? **   
 
-We've talked about this case before, but you should at least skim the story and analysis to make sure you understand the data you're looking at. 
+## Setup  
 
-## Read the data
+You can use `read_csv` to read a CSV file from an online location by providing a URL instead of a file path. We'll do that instead of downloading the COMPAS data from the repository manually. In this case, the data we'll download saves NA values in a way that we want to change. That means you'll need to pass an extra argument `na = c("NA", "N/A"))` after the URL.  
 
-You can use `read_csv` to read a CSV file from an online location by providing a URL instead of a file path. We'll do that instead of downloading the COMPAS data from the repository manually. 
+** Question 2.4: Prepare your R environment by loading the tidyverse, then reading the csv file at this URL:"https://raw.githubusercontent.com/propublica/compas-analysis/master/compas-scores-two-years.csv" and assigning the dataframe to the name 'compas.'**  
+(check the hints if you have trouble)  
 
-```{r}
-compas <- 
-  read_csv("https://raw.githubusercontent.com/propublica/compas-analysis/master/compas-scores-two-years.csv", 
-           na = c("NA", "N/A"))
-```
 
 ## Comparing Black and White defendants
 
-Together, we'll write code to compare the distribution of risk scores between Black and White defendants. Our goal is to make something like the bar charts shown here: https://www.propublica.org/article/how-we-analyzed-the-compas-recidivism-algorithm
+Together, we'll write code to compare the distribution of risk scores between Black and White defendants. Our goal is to make something like the bar charts shown about halfway through the 'how we did it' article (https://www.propublica.org/article/how-we-analyzed-the-compas-recidivism-algorithm). 
 
-1. filter the data to look at only Black and White defendants
-2. make a bar chart 
-3. facet by race
-4. clean up the axes and labels a bit
+Here's our analysis plan:
+
+1. Manipulate the data to look at only Black and White defendants
+2. Make a bar chart 
+3. Adjust the plot so that we have separate graphs for Black and White defendants
+4. Improve the look of our graph
+
+** Question 2.5 What's a verb or function do you think we'll need for each step? **
+
+We'll use this code block to work through these four steps together.
 
 ```{r}
-compas %>%
-  # -1 means that the score is missing, so we'll filter those values out
-  filter(decile_score != -1) %>%
-  # we'll write our code together here
-  filter() %>%
-  ggplot()
+# I like to add comments to plan out my work
+
+# Limit data to Black and White race
+# Make a bar chart
+# Get separate frames for each race
+# Make the visualization pretty and easy to read
 ```
 
 ## Comparing men and women defendants
 
-Let's apply the same approach to compare women and men. 
+** Question 2.6 Re-write our above code to compare folks by gender. Do you notice a problem with the graphs? **
 
 ```{r}
-compas %>%
-  filter(decile_score != -1) %>%
-  ggplot(aes(x = decile_score)) + 
-  geom_bar() +
-  scale_x_continuous(breaks = 1:10) +
-  facet_wrap(~sex) + 
-  labs(title = "COMPAS recidivism risk scores")
+
+# Make a bar chart
+# Get separate frames for each gender
+# Make the visualization pretty and easy to read
 ```
+
+
+
+
+
+
+
 
 This isn't a great way to compare the two. Why not? Because the relative sizes of the groups are very different. 
 
-### new verbs: `group_by` and `count`
+## New Verbs: `group_by` and `count`
 
 Instead of counts, let's compare *proportions*. To do that, we'll need new `dplyr` verbs. 
 
@@ -96,26 +108,25 @@ Instead of counts, let's compare *proportions*. To do that, we'll need new `dply
 `count` groups by a variable or variables, and then summarizes the number of rows in each group. It's the same as `group_by %>% summarize(n = n()) %>% ungroup()`. 
 
 ```{r}
-compas %>% 
-  count(sex, decile_score) %>% 
-  group_by(sex) %>% 
-  mutate(proportion = n/sum(n)) %>%
-  ggplot(aes(x = decile_score, y = proportion)) + 
-  geom_bar(stat = "identity") + 
-  facet_wrap(~sex)
+compas %>% # take the compas data
+  count(sex, decile_score) %>% # add counts of how many fit into each decile score for each gender
+  group_by(sex) %>% # group by sex
+  mutate(proportion = n/sum(n)) %>% # add a column of proportion by dividing, the number of women/men who got a particular decile score by the total number of that gender
+  ggplot(aes(x = decile_score, y = proportion)) + # plot our results
+  geom_bar(stat = "identity") + # specify that we don't want to use counts in our bar char
+  facet_wrap(~sex) # facet wrap
+
 ```
 
 Now, it's clear that a larger proportion of women have lower risk scores. 
 
-## Question: proportions by race
-
-Modify the code above to plot proportions by race, instead of counts. This time, don't filter out any racial groups. 
+** Question 2.7 Modify the code above to plot proportions by race, instead of counts. This time, don't filter out any racial groups.**  
 
 ```{r}
-# write your code here
+
 ```
 
-# Data Set 2: PASSNYC schools data
+# 3: PASSNYC schools data
 
 The non-profit PASSNYC is interested in improving access to education in New York City and in increasing the diversity of students taking the SHSAT exam for elite public schools. 
 
@@ -218,4 +229,13 @@ Statistical models in R use a formula syntax (`z ~ x + y`). `lm` and `glm` are c
 ```{r}
 fit1 <- lm(decile_score ~ race + sex, data = filter(compas, decile_score != -1))
 summary(fit1)
+```
+
+Hints
+
+2.4 Your code should look like this:
+```{r}
+compas <- 
+  read_csv("https://raw.githubusercontent.com/propublica/compas-analysis/master/compas-scores-two-years.csv", 
+           na = c("NA", "N/A"))
 ```
