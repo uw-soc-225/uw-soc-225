@@ -258,17 +258,35 @@ schools %>% # take the schools data
 
 ** Question 3.11: Interpret our results **
 
-## Question: explore the PASSNYC data
+# 4 Self Exploration
 
-Explore the PASSNYC data set a bit on your own. Get a sense for what variables it contains and what their distributions are. `View(schools)` and `names(schools)` are ways to do this in R, but the Kaggle page also has some information: https://www.kaggle.com/passnyc/data-science-for-good 
+Now you need to get in touch with the deepest parts of yourself through silent meditation.
 
-Then, pick two variables whose covariation you want to explore. Make a scatterplot. Add a trend, either a curve (the default `geom_smooth()`) or or a straight line (`geom_smooth(method = "lm")`). 
+Just kidding, you'll have the chance to explore an aspect of either the PASSNYC or COMPAS data on your own.
+
+** Question 4.1 Which dataset are you interested in looking at? What drew you to that data? **  
+
+
+** Question 4.2 Explore the variables in the data you picked. Which variables seem like they might address your interest? What mode of data are they in? Make a plot for each showing its varience. **
 
 ```{r}
-# write your code here
+
 ```
 
-# Challenge: run a model
+** Question 4.3 Given what you know about the data and the variation of those two variables, write a hypothesis about their relationship. **
+
+Hypothesis:
+
+** Question 4.4 Investigate the covarience between your two variables with a scatterplot **  
+- Add a trend , either a curve (the default `geom_smooth()`) or or a straight line (`geom_smooth(method = "lm")`)
+- Add proper titles
+- Consider changing the theme
+
+```{r}
+
+```
+
+#  5 Challenge: run a model
 
 Statistical models in R use a formula syntax (`z ~ x + y`). `lm` and `glm` are common modeling functions. Try out models incorporating multiple covariates on either of today's data sets. Print a summary of the results, and, if you're ambitious, try to visualize them. See http://socviz.co/modeling.html and http://r4ds.had.co.nz/model-basics.html for how to do that.
 
@@ -303,3 +321,5 @@ schools <-
   mutate_at(vars(ends_with("Rate")), parse_number) %>%
   mutate(`School Income Estimate` = parse_number(`School Income Estimate`))
 ```
+
+4.2 These will be bar plots if your data is catagorical, histograms if its continuous. If the data is categorical but has lots of different values, you should consider combining it using factors.
