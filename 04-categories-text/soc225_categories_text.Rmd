@@ -16,19 +16,19 @@ output:
 - Use regular expressions to manipulate text data
 
 
-# 1: Modes and Types of Data in R  
+# 1: Types of Data in R  
 
 We've already done a lot with lots of data here in R. But it's time to pause briefly to talk about the different kinds of data R can hold and the different formats R can hold the data in.  
 
 ## Modes
 
-There are three kinds of data we deal with in R. We call them *modes* of data:  
+There are three main kinds of data we deal with in R. We call them *types* of data:  
 
-Numeric: 1000, 2.3, or 4.4e23  
+Numeric (double or integer): 1000, 2.3, or 4.4e23  
 Character: "super cool", "airbnb is totally hard to deal with","1,000,000", or "free cheese in the break room"  
 Logical: TRUE or FALSE  
 
-**Question 1.1: assign the following three variables values of the proper mode**  
+**Question 1.1: assign the following three variables values of the proper type**  
 
 ```{r}
 # a <- 
@@ -44,7 +44,7 @@ typeof("super cool")
 typeof(TRUE)
 ```
 
-** Question 1.2 Check the modes of 'a', 'b', and 'c' from 1.1 using `typeof()`**  
+** Question 1.2 Check the types of 'a', 'b', and 'c' from 1.1 using `typeof()`**  
 
 ```{r}
 
@@ -56,29 +56,34 @@ So far in this module, each of our variables has contained only one value. But, 
 
 1. Scalar: single values  
 - assign a single value to make a scalar
+
 ```{r}
 my_scalar <- 45
 ```
 
-2. Vector: one dimensional data type, only one mode of data allowed  
+2. Vector: one dimensional data structure, only one type of data allowed  
 - use `c()` to make a vector:
+
 ```{r}
 my_vector <- c(45, 32, 31, 10000)
 ```
 
 ** Question 1.3 Check the length of my_vector and my_scalar using length(). What does that tell you about scalars? **
+
 ```{r}
 
 ```
 
-Vectors can only accept one mode of data, so if we mix modes, the vector will coerce (force) all of them to be the same:
+Vectors can only accept one type of data, so if we mix types, the vector will coerce (force) all of them to be the same:
+
 ```{r}
 my_new_vector <- c(45, 4.5, "450")
 typeof(my_new_vector)
 ```
-In this case, even though 45 and 4.5 are numeric scalars, they've been coerced to character mode.
 
-3. Matrix: two dimensional data type, only one mode of data allowed  
+In this case, even though 45 and 4.5 are numeric scalars, they've been coerced to character type.
+
+3. Matrix: two dimensional data structure, only one type of data allowed  
 
 ```{r}
 my_matrix <- matrix(1:20, nrow=5,ncol=4)
@@ -88,65 +93,68 @@ typeof(my_matrix)
 
 ** Question 1.4 What data mode is filled in this matrix? Confirm your answer using typeof() **
 
-4. Array: multi-dimensional data type, only one mode of data allowed  
+4. Array: multi-dimensional data structure, only one type of data allowed  
 
 If you need more than two dimensions, you'll need an array. We won't cover them, but you can look up the documentation.  
 
 --- break to talk about getting stuff out of these data-types ---
 
-For vectors, matricies, and arrays, accessing the data you store in them is as simple as []. That is, you just need to throw brackets around the location of the value you want and you'll get it. Each value in one of these data types has a kind of 'address' made up of a numeric vector with lenght equal to the number of dimensions. 
+For vectors, matrices, and arrays, accessing the data you store in them is as simple as []. That is, you just need to throw brackets around the location of the value you want and you'll get it. Each value in one of these data types has a kind of 'address' made up of a numeric vector with lenght equal to the number of dimensions. 
 
 ```{r}
 # grab the third item in my_new_vector
 my_new_vector[3]
 
 # grab the item in the third row and second colum of my_matrix
-my_matrix[3,2]
+my_matrix[3, 2]
 
 # grab the whole second row of my_matrix
-my_matrix[,2]
+my_matrix[, 2]
 ```
 
 
-5. List: one dimensional data type, ordered and named, *multiple data modes and types allowed*  
+5. List: one dimensional data structure, ordered and named, *multiple data types allowed*  
 
-Lists are actually a special type of vector, but they can hold basically anything in them. You can have lists of numbers, lists, lists of matricies, lists of vegetables, whatever.
+Lists are actually a special type of vector, but they can hold basically anything in them. You can have lists of numbers, lists, lists of matrices, lists of vegetables, whatever.
 
 ```{r}
-my_list <- list(45, 4.5, "450", c(1,2,3))
+my_list <- list(45, 4.5, "450", c(1, 2, 3))
 my_list
 ```
 
-Notice that the values were not coerced into the same mode, but were allowed to stay the same. 
+Notice that the values were not coerced into the same type, but were allowed to stay the same. 
 
-Accessing things you've stored in lists is really similar to vectors. You can us [] around the index of whatevery you want to grab. However, you'll automatically be given a list of that item. To get just the item us [[]]:
+Accessing things you've stored in lists is really similar to vectors. You can use [] around the index of whatever you want to grab. However, you'll automatically be given a list of that item. To get just the item use [[]]:
 
 ```{r}
 my_list[1]
 my_list[[1]]
 ```
 
-You can do other cool suff with lists, like add names to each item to make a named list. You can find out more by reading the help entries for list() and names().
+You can do other cool stuff with lists, like add names to each item to make a named list. You can find out more by reading the help entries for list() and names().
 
 ** Question 1.5: Make a list in R of your favorite things. **
 
-6. Data Frames: multi-dimensional (usually two dimensional) data type, only one mode of data per column, multiple per row  
+6. Data frames: two-dimensional data structure, only one type of data per column, multiple per row  
 
-This is what we will, and what we have already, used most often. Data frames resemble matricies and arrays superficially -- all three are data organized by dimension. However, Data Frames are a bit different. The columns are vectors of a single mode, but the mode of each column can be different. That means that each row is made up of a single entry from each column, and so can include data of different modes. That's great for us because we usually want to work with data where each observation (row) has variables of different types.
+This is the data structure we use most often for data analysis in R. Data frames resemble matrices and arrays superficially -- all three are data organized into multiple dimensions. However, data frames are a bit different. The columns are vectors of a single type, but the type of each column can be different. That means that each row is made up of a single entry from each column, and so can include data of different type. That's great for us because we usually want to work with data where each observation (row) has variables of different types.
 
-When we use read_csv to read a file, the package `readr` automatically makes a data frame for us. But we can also make a new data frame out of vectors. Imagine if I had some data on trees:
+When we use `read_csv` to read a file, the package `readr` automatically makes a data frame for us. But we can also make a new data frame out of vectors. Imagine if I had some data on trees:
 
 ```{r}
-tree_id <- c(1,2,3,4) # set tree ids from 1-4
-tree_heights <- c(19,20,35,5) # real measured tree hights that I made with a measuring tape
+library(tidyverse)
+
+tree_id <- c(1, 2, 3, 4) # set tree ids from 1-4
+tree_heights <- c(19, 20, 35, 5) # real measured tree heights that I made with a measuring tape
 tree_ages <- c(40, 35, 60, 4) # I asked each tree
-tree_names <- c('oak', 'poplar', 'willow', 'beech') # two of these trees really like Pokemon
-data_frame(tree_id,tree_heights,tree_ages,tree_names)
+tree_names <- c("oak", "poplar", "willow", "beech") # two of these trees really like Pokemon
+
+data_frame(tree_id, tree_heights, tree_ages, tree_names)
 ```
 
 Then we can use all the verbs we've used from the tidyverse. 
 
-** Question 1.6 Use mutate() to add a column that shows the average number of feet each tree has grown for each year it's been alive **
+** Question 1.6: Use mutate() to add a column that shows the average number of feet each tree has grown for each year it's been alive **
 
 ```{r}
 
@@ -155,14 +163,17 @@ Then we can use all the verbs we've used from the tidyverse.
 
 # 2: Categorical data
 
+
 There's actually another important mode of data in R. Sometimes we have a long vector, maybe thousands or millions of entries long, but it only has a few values. For instance, the following code makes a character vector of 1024 tree names, but it only has 4 types of trees.
 
 ```{r}
-lots_of_trees <- sample(tree_names, 1024, replace=TRUE) # sample repeatedly from our list of tree names 1024 times
+lots_of_trees <- sample(tree_names, 1024, replace = TRUE) # sample repeatedly from our list of tree names 1024 times
 head(lots_of_trees) # show just the first 6 entries
 ```
 
-R has a way of dealing with this kind of categorical data, called a *factor*. Factors make some kinds of statistical analysis and visualizations much easier. We're going to use a new package, called forcats, (for categorical variables, not for kitties), so install and load it.
+R has a way of dealing with this kind of categorical data, called a *factor*. Factors make some kinds of statistical analysis and visualizations much easier. We're going to use a new package, called `forcats`, (for categorical variables, not for kitties). 
+
+`forcats` is installed as part of the `tidyverse`, but you'll need to load it separately. Load it now.
 
 ```{r}
 
@@ -171,6 +182,7 @@ R has a way of dealing with this kind of categorical data, called a *factor*. Fa
 Forcats lets you turn a vector of any mode into a factor with the functions 'as_factor()'.
 
 ** Question 2.1: Turn lots_of_trees into a factor called tree_factor **
+
 ```{r}
 tree_factor <- as_factor(lots_of_trees)
 ```
@@ -179,7 +191,6 @@ A factor has levels:
 ```{r}
 levels(tree_factor)
 ```
-
 
 
 # Text data
