@@ -20,7 +20,7 @@ output:
 
 We've already done a lot with lots of data here in R. But it's time to pause briefly to talk about the different kinds of data R can hold and the different formats R can hold the data in.  
 
-## Modes
+## Data Types
 
 There are three main kinds of data we deal with in R. We call them *types* of data:  
 
@@ -149,12 +149,13 @@ tree_heights <- c(19, 20, 35, 5) # real measured tree heights that I made with a
 tree_ages <- c(40, 35, 60, 4) # I asked each tree
 tree_names <- c("oak", "poplar", "willow", "beech") # two of these trees really like Pokemon
 
-data_frame(tree_id, tree_heights, tree_ages, tree_names)
+tree_data <- data_frame(tree_id, tree_heights, tree_ages, tree_names)
+tree_data
 ```
 
 Then we can use all the verbs we've used from the tidyverse. 
 
-** Question 1.6: Use mutate() to add a column that shows the average number of feet each tree has grown for each year it's been alive **
+**Question 1.6: Use mutate() to add a column that shows the average number of feet each tree has grown for each year it's been alive**
 
 ```{r}
 
@@ -163,38 +164,143 @@ Then we can use all the verbs we've used from the tidyverse.
 
 # 2: Categorical data
 
+Let's think back to the kinds of variables we encounter during analysis, and how we might use R's data types and data structures to represent them. Continuous variables, of course, can be represented with numeric vectors. 
 
-There's actually another important mode of data in R. Sometimes we have a long vector, maybe thousands or millions of entries long, but it only has a few values. For instance, the following code makes a character vector of 1024 tree names, but it only has 4 types of trees.
+But what about categorical variables? We might represent them with character vectors. But characters are open-ended and potentially messy, as you'll see when we talk about text data below.   
 
-```{r}
-lots_of_trees <- sample(tree_names, 1024, replace = TRUE) # sample repeatedly from our list of tree names 1024 times
-head(lots_of_trees) # show just the first 6 entries
-```
+To better represent categorical data, R can instead use an augmented data type called a *factor*. Factors build on the basic data types you learned about above. They give us more tools specifically for working with categorical data, which are especially handy for visualizations. 
 
-R has a way of dealing with this kind of categorical data, called a *factor*. Factors make some kinds of statistical analysis and visualizations much easier. We're going to use a new package, called `forcats`, (for categorical variables, not for kitties). 
+To work with factors, we're going to use a new package called `forcats`, (for categorical variables, not for kitties). `forcats` is installed as part of the `tidyverse`, but you'll need to load it separately. 
 
-`forcats` is installed as part of the `tidyverse`, but you'll need to load it separately. Load it now.
+This module is based on a section of UBC's STAT 545 course (http://stat545.com/block029_factors.html) and Chapter 15 of R for Data Science (http://r4ds.had.co.nz/factors.html). 
 
-```{r}
+## Example: Gapminder
 
-```
+We'll use the `gapminder` data set again to illustrate working with factors.
 
-Forcats lets you turn a vector of any mode into a factor with the functions 'as_factor()'.
-
-** Question 2.1: Turn lots_of_trees into a factor called tree_factor **
+**Question 2.1: Load the forcats and gapminder packages. Look at the gapminder data. Which variables are factors?**
 
 ```{r}
-tree_factor <- as_factor(lots_of_trees)
+
 ```
 
-A factor has levels:
+The values that a factor can take on are called *levels*. You can use the `levels()` function to look at the levels of a factor.
+
+**Question 2.2: Look at the levels for one of the variables in the gapminder data. How many levels does it have? What order are they in?**
+
 ```{r}
-levels(tree_factor)
+
 ```
 
+### Ordering factors by frequency
+
+The gapminder data includes countries with complete data from 1952 to 2007. How many countries is that per continent? We'll start with a simple bar chart, and then go through ways to improve it step by step. 
+
+```{r}
+gapminder %>%
+  # filter to one year, it doesn't matter which
+  filter(year == "2007") %>%
+  ggplot(aes(x = continent)) +
+  geom_bar() 
+```
+
+First, we'll order the bars by the number of countries, using `fct_infreq()`: 
+
+```{r}
+gapminder %>%
+  filter(year == "2007") %>%
+  mutate(continent = fct_infreq(continent)) %>%
+  ggplot(aes(x = continent)) + 
+  geom_bar()
+
+# more concise, but messier: 
+# gapminder %>%
+#   filter(year == "2007") %>%
+#   ggplot(aes(x = fct_infreq(continent))) + 
+#   geom_bar()
+```
+
+Next, we'll put the bars in ascending order. To reverse the order of a factor, use `fct_rev()`:
+
+```{r}
+gapminder %>%
+  filter(year == "2007") %>%
+  mutate(continent = fct_rev(fct_infreq(continent))) %>%
+  ggplot(aes(x = continent)) + 
+  geom_bar()
+```
+
+Finally, let's polish our plot a little. We'll flip the axes and add labels: 
+
+```{r}
+gapminder %>%
+  filter(year == "2007") %>%
+  mutate(continent = fct_rev(fct_infreq(continent))) %>%
+  ggplot(aes(x = continent)) + 
+  geom_bar() +
+  coord_flip() + 
+  labs(title = "How many countries per continent?", 
+       subtitle = "Countries with complete data, Gapminder")
+```
+
+Compare this to the bar chart we started with---it should be easier now to see the point of the plot and to compare across continents.
+
+### Ordering factors by another variable
+
+Instead of frequencies, you can reorder factors by values of some other numeric variable using `fct_reorder()`.
+
+The syntax is `fct_reorder(categorical_variable, continuous_variable)`. To practice this, we'll use gapminder data for Asian countries in 2007.
+
+**Question 2.3: Create a new data frame by filtering the `gapminder` data down to countries in Asia in 2007.**
+
+```{r}
+# gapminder_asia_2007 <- 
+```
+
+**Question 2.4: Choose one of the continuous variables. Make a dot plot of this variable by country.**
+
+You'll want country names on the y axis for legibility. With `geom_point()`, you don't need to use `coord_flip()` to do this.
+
+```{r}
+
+```
+
+**Question 2.5: Reorder countries by that same continuous variable, and remake your plot.**
+
+Be sure to give your plot an appropriate title.
+
+```{r}
+
+```
+
+## Converting from characters to factors
+
+If you want to use the tools of `forcats` on categorical data stored as a character rather than a factor, you'll need to *convert* that variable to a factor first. You turn a character variable into a factor using the function `as_factor()`.
+
+**Question 2.6: Try this out on the `tree_data` from above. Convert the variable `tree_names` into a factor.**
+
+```{r}
+
+```
+
+**Question 2.7: Plot one of the continuous variables against tree_names, reordering appropriately.**
+
+Try out using `geom_col()` for this plot. How is it different from `geom_bar()`?
+
+```{r}
+
+```
+
+## Going further with `forcats`
+
+`forcats` includes many other tools for working with factors. For example, you can rename or combine factor levels using `fct_recode`, or group together small categories using `fct_lump`. Type `fct_` into your console and hit "tab" to check out the full list of forcats functions.
+
+If you have extra time, have a look the `gss_cat` data set, included in the `forcats` package. This is some sample data from the General Social Survey (GSS), one of the most important ongoing social scientific surveys. The sample includes data on race, religion, political party affiliation, and marital status. Experiment with these other `forcats` functions on `gss_cat`.
 
 # Text data
 
 ```{r}
 library(stringr)
 ```
+
+
