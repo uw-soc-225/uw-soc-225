@@ -299,8 +299,29 @@ If you have extra time, have a look the `gss_cat` data set, included in the `for
 
 # Text data
 
+(aka "strings")
+
+Like `forcats`, `stringr` is a part of the tidyverse that isn't loaded by default. 
+
+This module is based off of http://stat545.com/block028_character-data.html and Chapter 14 of R for Data Science (http://r4ds.had.co.nz/strings.html). 
+
 ```{r}
 library(stringr)
+
+fruit
+
+data_frame(fruit) %>%
+  mutate(type = str_extract(fruit, "fruit|berry|melon")) %>%
+  ggplot(aes(x = type)) + 
+  geom_bar()
 ```
 
+```{r}
 
+```
+
+## Going further with text data
+
+regex
+
+What if you want to go further with analyzing unstructured text data? For instance, what if you want to analyze word counts or sentiments in a novel, or a bunch of tweets? The `tidytext` package is one framework for doing this. *Text Mining with R*, by Julia Silge and David Robinson, is a free online textbook for working with tidy text data, which you can find here: https://www.tidytextmining.com/
