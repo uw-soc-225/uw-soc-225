@@ -9,6 +9,7 @@ output:
 ---
 
 # Goals
+
 - Understand two applications of exploratory data analysis
 - Apply the skills we've learned so far to analyze some real-world data sets
 
@@ -41,17 +42,17 @@ They've released their data and code publicly on GitHub, which is good practice 
 
 Look through the article and use it to answer these questions.  
   
-** Question 2.1: What's the main take home for this article? What do they want readers to understand? **  
+**Question 2.1: What's the main take home for this article? What do they want readers to understand?**  
 
-** Question 2.2: How was data important to the work these Journalists did? **  
+**Question 2.2: How was data important to the work these Journalists did?**  
 
-** Question 2.3: Interpret the charts labeled "Black Defendents' Risk Scores" and "White Defendents' Risk Scores." What is the message of those visualization? If I told you that the authors used ggplot to make them, what 'geom' function do you think they used? Why? **   
+**Question 2.3: Interpret the charts labeled "Black Defendents' Risk Scores" and "White Defendents' Risk Scores." What is the message of those visualization? If I told you that the authors used ggplot to make them, what 'geom' function do you think they used? Why?**   
 
 ## Setup  
 
 You can use `read_csv` to read a CSV file from an online location by providing a URL instead of a file path. We'll do that instead of downloading the COMPAS data from the repository manually. In this case, the data we'll download saves NA values in a way that we want to change. That means you'll need to pass an extra argument `na = c("NA", "N/A"))` after the URL.  
 
-** Question 2.4: Prepare your R environment by loading the tidyverse, then reading the csv file at this URL:"https://raw.githubusercontent.com/propublica/compas-analysis/master/compas-scores-two-years.csv" and assigning the dataframe to the name 'compas.'**  
+**Question 2.4: Prepare your R environment by loading the tidyverse, then reading the csv file at this URL:"https://raw.githubusercontent.com/propublica/compas-analysis/master/compas-scores-two-years.csv" and assigning the dataframe to the name 'compas.'**  
 (check the hints if you have trouble)  
 
 
@@ -66,7 +67,7 @@ Here's our analysis plan:
 3. Adjust the plot so that we have separate graphs for Black and White defendants
 4. Improve the look of our graph
 
-** Question 2.5 What's a verb or function do you think we'll need for each step? **
+**Question 2.5 What's a verb or function do you think we'll need for each step?**
 
 We'll use this code block to work through these four steps together.
 
@@ -81,7 +82,7 @@ We'll use this code block to work through these four steps together.
 
 ## Comparing men and women defendants
 
-** Question 2.6 Re-write our above code to compare folks by gender. Do you notice a problem with the graphs? **
+**Question 2.6 Re-write our above code to compare folks by gender. Do you notice a problem with the graphs?**
 
 ```{r}
 
@@ -120,7 +121,7 @@ compas %>% # take the compas data
 
 Now, it's clear that a larger proportion of women have lower risk scores. 
 
-** Question 2.7 Modify the code above to plot proportions by race, instead of counts. This time, don't filter out any racial groups.**  
+**Question 2.7 Modify the code above to plot proportions by race, instead of counts. This time, don't filter out any racial groups.**  
 
 ```{r}
 
@@ -138,12 +139,13 @@ Optionally, you can read more about testing and segregation in NYC public school
 
 *We're going to do some exploratory data analysis together and then you'll pick a relationship in the data and investigate it on your own.*
 
-##  Get and clean the data
+## Get and clean the data
 
 To download the data, you'll need to create a Kaggle account. Then log-in, download the data, unzip the files, and put them in your project folder. 
 
 
-** Question 3.1 Write appropriate code to read the data into R, and rename the 'N/A' to 'NA' like we did above. Once you've loaded the data, use glimse to check it out. Do you notice anything odd about the data modes? **
+**Question 3.1 Write appropriate code to read the data into R, and rename the 'N/A' to 'NA' like we did above. Once you've loaded the data, use glimse to check it out. Do you notice anything odd about the data modes?**
+
 ```{r}
 
 ```
@@ -152,7 +154,7 @@ To download the data, you'll need to create a Kaggle account. Then log-in, downl
 
 If we look at the glimpse of the data, we'll see that some columns that we'd expect to have numeric data, like 'percent ELL' are character strings instead. If we look at the values, we can see that the strings are things like "9%", "5%", and "15%". 
 
-**Question 3.2 Given what you know about strings and data-types, how could you extract only the numbers of these strings and save them as numeric columns. I've given you a vector to practice on.**
+**Question 3.2 Given what you know about strings and data-types, how could you extract only the numbers of these strings and save them as numeric columns? I've given you a vector to practice on.**
 
 ```{r}
 percent_example <- c("9%", "5%", "15%", "7%", "3%", "6%", "1%")
@@ -161,28 +163,30 @@ typeof(percent_example)
 
 There are lots of ways to solve this problem. One of the easiest is down at the bottom of the hints section. 
 
-** Question 3.3 Now we need to apply our solution to a whole column. Clean up the 'percent ELL' column using mutate() and a solution to 3.2**
+**Question 3.3 Now we need to apply our solution to a whole column. Clean up the 'percent ELL' column using mutate() and a solution to 3.2**
 
 ```{r}
 
 ```
 
-Unfortunetly, that's not the only column that we need to change. Fortunetly mutate has a sibling function called `mutate_at` which lets us specify groups of columns and apply a function to them.
+Unfortunately, that's not the only column that we need to change. Fortunately mutate has a sibling function called `mutate_at` which lets us specify groups of columns and apply a function to them.
 
-** Question 3.4 Use mutate_at to change all the columns that start with 'Percent' so that they're numberic.**
+**Question 3.4 Use mutate_at to change all the columns that start with 'Percent' so that they're numeric.**
+
 Read the docs for mutate_at!!
+
 ```{r}
 
 ```
 
-** Question 3.5 What other columns need to be modified? Write new lines of mutate_at for each column or group of columns that needs to be modified. Assign a the variable name 'schools' to the modified data frame**
+**Question 3.5 What other columns need to be modified? Write new lines of mutate_at for each column or group of columns that needs to be modified. Assign a the variable name 'schools' to the modified data frame**
 
 
 ## Scatterplots and smoothing
 
 Ok, now that our data is nice and clean, we can do some exploration. 
 
-** Question 3.6 Look through the school data agian and make a list of variables that you think would be interesting to explore. Are there any pairs that look interesting to consider together? **
+**Question 3.6 Look through the school data agian and make a list of variables that you think would be interesting to explore. Are there any pairs that look interesting to consider together?**
 
 We'll take a few examples and look at the association or *covariation* between two variables. We'll look first at student attendence, then at the connection between economic need and race, and finally you'll examine some variables of your own.
 
@@ -196,8 +200,8 @@ Notice that variable names can't normally have spaces in them! Since these do, w
 
 ```{r}
 schools %>% # take our modified data
-  ggplot(aes(x = `Percent of Students Chronically Absent`, # assignt the x and y aestetics
-                    y = `Student Attendance Rate`)) + 
+  ggplot(aes(x = `Percent of Students Chronically Absent`, # assign the x and y aesthetics
+             y = `Student Attendance Rate`)) + 
   geom_point(alpha = .5) + # make a scatterplot, increasing transparency to show when points fall in the same place
   geom_smooth() # plot a trendline using the default method, 'gam' in this case
 ```
@@ -208,16 +212,16 @@ One school apparently has 0% attendance, that seems unlikely so we're justified 
 schools %>%
   filter(`Percent of Students Chronically Absent` != 100) %>% # add a filter to get rid of the outlier
   ggplot(aes(x = `Percent of Students Chronically Absent`, # otherwise the code is the same as above
-                    y = `Student Attendance Rate`)) + 
+             y = `Student Attendance Rate`)) + 
   geom_point(alpha = .5) + 
   geom_smooth()
 ```
 
-** Question 3.8: Interpret our results **
+**Question 3.8: Interpret our results**
 
 ## Economic need and race
 
-** Question 3.9 what do you think will be the relationship between the proportion of students who are white `Percent White` and how much economic need is present in the school `Economic Need Index`?**
+**Question 3.9 what do you think will be the relationship between the proportion of students who are white `Percent White` and how much economic need is present in the school `Economic Need Index`?**
 
 Hypothesis:
 
@@ -238,25 +242,73 @@ schools %>% # take the schools data
 
 ### new verb: `gather`
 
-Alternative, we can plot covariation between racial composition and economic need for all racial groups simultaneously. But to do this, we need to rely on *tidy data* principles, and convert the data from **wide** to **long** format using `gather`. 
+We can also examine covariation between racial composition and economic need for all racial groups simultaneously, as different facets of the same plot. But with ggplot2 this only works if each racial category is part of the same variable. Right now, they're in separate columns. We need them to be in the same column. Can you imagine what that would look like?
+
+We'll make this happen by relying on *tidy data* principles to convert the data from **wide** to **long** format. There's a new verb we'll use exactly for this, called `gather`.
+
+First, let's select only the columns we need: 
 
 ```{r}
-schools %>% # take the schools data
-  gather(key = "Race", value = "Percent", # use gather to make long data
+schools_wide <-
+  schools %>%
+  select(`School Name`, `Economic Need Index`, 
          `Percent Asian`, `Percent Black`, 
-         `Percent Hispanic`, `Percent White`) %>%
-  mutate(Percent = Percent/100) %>% # make nicer percents by makeing them proportions
-  ggplot(aes(x = `Economic Need Index`, y = Percent, color = Race)) + # start our plot, coloring by race
-  geom_point(alpha = .5) + # increase transparancy
-  geom_smooth(method = "lm", color = "black") + # specify linear smoothing
-  facet_wrap(~Race) + # wrap by Race
-  guides(color = FALSE) + # get rid of the color legend
-  scale_y_continuous(labels = scales::percent) + # make a percent scale
-  labs(title = "Student racial composition and economic need") # add a title
+         `Percent Hispanic`, `Percent White`)
 ```
 
+**Question 3.11: How many rows and columns does `schools_wide` have? Which columns seem like they could be part of the same variable?**
 
-** Question 3.11: Interpret our results **
+`gather` takes as many columns as you'd like and makes two new columns:
+
+- a *key* column, with the column names as categories
+- a *value* column, with all of the original column values
+
+Now we're ready to go long: 
+
+```{r}
+schools_long <- 
+  schools_wide %>% 
+  # note the syntax for gather!
+  # the new column names come first, 
+  # THEN all of the original columns
+  gather(key = "Race", value = "Percent",
+         `Percent Asian`, `Percent Black`, 
+         `Percent Hispanic`, `Percent White`)
+```
+
+**Question 3.12: Look at `schools_long`. What happened? How many rows and columns does it have?**
+
+You can read more about `gather` (and its opposite, `spread`) in Chapter 12 of R for Data Science (http://r4ds.had.co.nz/tidy-data.html#spreading-and-gathering). 
+
+With the data in long format, we're ready to plot. We'll encode the race variable both as *color* and as separate *facets*. 
+
+```{r}
+p <- 
+  schools_long %>%
+  ggplot(aes(x = `Economic Need Index`, y = Percent, 
+             color = Race)) + # mapping race to color
+  geom_point(alpha = .5) + # adding transparency
+  facet_wrap(~Race) # faceting by race
+
+p
+```
+
+**Question 3.13: Improve this plot.** 
+
+I've started by removing the redundant color legend. At minimum, you should also
+
+- add a descriptive title
+- add trend lines. You can try straight lines with `method = "lm"`. If you can't see them well, set their color to "black".
+
+If you want to look extra cool, google how to add percent signs (%) to your y axis.
+
+```{r}
+p + 
+  guides(color = FALSE) 
+```
+
+**Question 3.14: Interpret our results**
+
 
 # 4 Self Exploration
 
@@ -264,21 +316,22 @@ Now you need to get in touch with the deepest parts of yourself through silent m
 
 Just kidding, you'll have the chance to explore an aspect of either the PASSNYC or COMPAS data on your own.
 
-** Question 4.1 Which dataset are you interested in looking at? What drew you to that data? **  
+**Question 4.1 Which dataset are you interested in looking at? What drew you to that data?**  
 
 
-** Question 4.2 Explore the variables in the data you picked. Which variables seem like they might address your interest? What mode of data are they in? Make a plot for each showing its varience. **
+**Question 4.2 Explore the variables in the data you picked. Which variables seem like they might address your interest? What types of data are they? Make a plot for each showing its variation.**
 
 ```{r}
 
 ```
 
-** Question 4.3 Given what you know about the data and the variation of those two variables, write a hypothesis about their relationship. **
+**Question 4.3 Given what you know about the data and the variation of those two variables, write a hypothesis about their relationship.**
 
 Hypothesis:
 
-** Question 4.4 Investigate the covarience between your two variables with a scatterplot **  
-- Add a trend , either a curve (the default `geom_smooth()`) or or a straight line (`geom_smooth(method = "lm")`)
+**Question 4.4 Investigate the covariation between your two variables with a scatterplot**  
+
+- Add a trend, either a curve (the default `geom_smooth()`) or or a straight line (`geom_smooth(method = "lm")`)
 - Add proper titles
 - Consider changing the theme
 
@@ -298,6 +351,7 @@ summary(fit1)
 Hints
 
 2.4 Your code should look like this:
+
 ```{r}
 compas <- 
   read_csv("https://raw.githubusercontent.com/propublica/compas-analysis/master/compas-scores-two-years.csv", 
@@ -309,11 +363,12 @@ compas <-
 3.4 `mutate_at` needs two arguments to work for us here, we hvae to tell it what variables to use by calling vars(starts_with("Percent")), then we need to tell it what function to use by writing parse_number.
 
 3.5 Code for 3.1-5 could look like this:
-```{r}
 
+```{r}
 schools_raw <- 
   read_csv("data/2016 School Explorer.csv", 
            na = c("NA", "N/A"))
+
 schools <- 
   schools_raw %>%
   mutate_at(vars(starts_with("Percent")), parse_number) %>%
@@ -322,4 +377,4 @@ schools <-
   mutate(`School Income Estimate` = parse_number(`School Income Estimate`))
 ```
 
-4.2 These will be bar plots if your data is catagorical, histograms if its continuous. If the data is categorical but has lots of different values, you should consider combining it using factors.
+4.2 These will be bar plots if your data is categorical, histograms if it's continuous. If the data is categorical but has lots of different values, you should consider combining it using factors.
