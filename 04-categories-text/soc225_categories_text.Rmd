@@ -15,6 +15,7 @@ output:
 - Locate keywords in texts
 - Use regular expressions to manipulate text data
 
+# 0: Lab Check-in
 
 # 1: Types of Data in R  
 

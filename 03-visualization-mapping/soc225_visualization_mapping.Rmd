@@ -8,6 +8,13 @@ output:
     toc: true
 ---
 
+# Goals
+
+- Add color to our visualizations
+- Add facets to our visualizations
+- Make visualizations using maps
+- Control color output using palettes
+
 # 0: Lab Check-in
 
 For the first half of this lab, we'll use the `gapminder` data set. This example is adapted from Kieran Healy's book, *Data Visualization: A Practical Introduction*, chapters 3 and 4: http://socviz.co/

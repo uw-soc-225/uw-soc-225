@@ -8,6 +8,13 @@ output:
     toc: true
 ---
 
+# Goals
+
+- Begin exploring a data set on our own
+- Master the pype %>%
+- Learn basic verbs from the tidyverse
+- Produce basic visualizations
+
 # 0: Lab Check-in
 
 Today, we'll continue working with the Inside Airbnb data. This time, we'll use the full data set of listings for Seattle. 
