@@ -11,7 +11,7 @@ output:
 # Goals
 
 - Begin exploring a data set on our own
-- Master the pype %>%
+- Master the pipe %>%
 - Learn basic verbs from the tidyverse
 - Produce basic visualizations
 
