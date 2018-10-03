@@ -21,25 +21,25 @@ For the first half of this lab, we'll use the `gapminder` data set. This example
 
 For the second half, we'll use the Seattle Airbnb listings from Inside Airbnb.
 
-** Question 0.1: Use the console to install the package 'gapminder' package, load that package and the tidyverse package.**
+**Question 0.1: Use the console to install the package 'gapminder' package, load that package and the tidyverse package.**
 
 ```{r}
 
 ```
 
-# 1 Visualizations with Covariation
+# 1: Visualizations with Covariation
 
 Bar charts and histograms are great at showing variation along one variable. However, we're often interesting at the relationship between two or more variables. That is, a bar chart or histogram shows the *variation* of a sigle variable. The visualizations we'll learn in the module show the *covariation* between variables.
 
 Before we start, let's take a look at the gapminder data
 
-** Question 1.1: Use glimpse to examine the gapminder data **
+**Question 1.1: Use glimpse to examine the gapminder data**
 
 ```{r}
 
 ```
 
-** Question 1.2: What's one variable that is continuous? What's one that's categorical? **
+**Question 1.2: What's one variable that is continuous? What's one that's categorical?**
 
 Read about the origins of the `gapminder` data set by typing `?gapminder`, and by looking at the source of the data: https://www.gapminder.org/data/
 
@@ -57,7 +57,7 @@ p <- # I can use the assignment operator to save a plot!
 p # by calling the object 'p' we can display the graph
 ```
 
-** Question 1.3 Make a scatterplot comparing the population and the life expectancy, assign it to an object named 'q'**
+**Question 1.3 Make a scatterplot comparing the population and the life expectancy, assign it to an object named 'q'**
 
 ```{r}
 
@@ -72,13 +72,13 @@ p + # taking our old graph, the '+' lets us add to it
   scale_x_log10() # add our scale
 ```
 
-** Question 1.4 add a log scale to your graph q **
+**Question 1.4 add a log scale to your graph q**
 
 ```{r}
 
 ```
 
-** Question 1.5 what do you think accounts for the distinctive shape of your scatterplot? **
+**Question 1.5 what do you think accounts for the distinctive shape of your scatterplot?**
 
 ## Colors
 
@@ -100,13 +100,13 @@ ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, color = log(pop))) +
   scale_x_log10()
 ```
 
-** Question 1.6 Remake plot q by choosing a continuous variable to add colors **
+**Question 1.6 Remake plot q by choosing a continuous variable to add colors**
 
 ```{r}
 
 ```
 
-** Question 1.7 Remake plot q by choosing a categorical variable to add colors that explain the interesting shapes **
+**Question 1.7 Remake plot q by choosing a categorical variable to add colors that explain the interesting shapes**
 
 ```{r}
 
@@ -128,7 +128,7 @@ ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) +
   facet_wrap(~continent) 
 ```
 
-** Question 1.8: Add a continent facet wrap to q **
+**Question 1.8: Add a continent facet wrap to q**
 
 ```{r}
 
@@ -144,8 +144,8 @@ What if we wanted to look at *total* GDP, not just per capita GDP? To do this, w
 ```{r}
 gapminder %>% # take the gapminder data
   filter(year == 2007) %>% # filter to the year 2007
-  mutate(gdp = gdpPercap * pop) %>% # make a new column 'gdp' which is the product of percapita gdp and population
-  ggplot(aes(x = pop, y = gdp, color = continent)) + # start a plot with the x axis as population and gdp as the y, color by contient
+  mutate(gdp = gdpPercap * pop) %>% # make a new column 'gdp' which is the product of per capita gdp and population
+  ggplot(aes(x = pop, y = gdp, color = continent)) + # start a plot with the x axis as population and gdp as the y, color by continent
   geom_point() # plot the points
 ```
 
@@ -191,8 +191,12 @@ The Inside Airbnb data has latitudes and longitudes for each listing, so we'll u
 
 ```{r}
 leaflet(airbnb_data) %>% # begin by passing the data to leaflet
-  addTiles() %>% # add the map files to the plot, leaflet automattically uses the latitdue and longitude data to find the right map
-  addCircles(popup = ~name) # add circles for each listing, by adding the popup argument, we can click on a cirle to show the name
+  addTiles() %>% # add the map files to the plot, 
+                 # leaflet automatically uses the latitude and longitude data 
+                 # to find the right map
+  addCircles(popup = ~name) # add circles for each listing, 
+                            # by adding the popup argument, we can click on a 
+                            # cirle to show the name
 ```
 
 **Question 4.2: Make a leaflet plot that only includes only listings with a price over $200 and shows the price when the circle is clicked**
@@ -206,13 +210,14 @@ leaflet(airbnb_data) %>% # begin by passing the data to leaflet
 Colors are a bit less automatic than with `ggplot2`. You need to create a palette using one of the provided functions, and then use that palette for your data and the legend. 
 
 ```{r}
-# We're going to start by making a smaller dataframe to use for our visualization
+# We're going to start by making a smaller data frame to use for our visualization
 example_data <- 
   airbnb_data %>% # assign the small dataframe the name 'example_data'
-  filter(neighbourhood == "University District") # filter the example data to only include listings from the U district
+  filter(neighbourhood == "University District") # only include listings from the UDistrict
  
 # this palette is based on the type of room
-room_type_pal <- colorFactor("Set1", example_data$room_type) # make a palette with the room types from the example data
+# "Set1" is a qualitative palette name
+room_type_pal <- colorFactor("Set1", example_data$room_type) 
 
 leaflet(example_data) %>% # make a leaflet plot with our example data
   addTiles() %>% # add the map tiles
