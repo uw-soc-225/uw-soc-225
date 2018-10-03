@@ -276,7 +276,7 @@ Be sure to give your plot an appropriate title.
 
 ## Converting from characters to factors
 
-If you want to use the tools of `forcats` on categorical data stored as a character rather than a factor, you'll need to *convert* that variable to a factor first. You turn a character variable into a factor using the function `as_factor()`.
+If you want to use the tools of `forcats` on categorical data stored as a character rather than a factor, you'll need to *convert* that variable to a factor first. `forcats` will often do this for you, but you can turn a character variable into a factor explicitly using the function `as_factor()`.
 
 **Question 2.6: Try this out on the `tree_data` from above. Convert the variable `tree_names` into a factor.**
 
