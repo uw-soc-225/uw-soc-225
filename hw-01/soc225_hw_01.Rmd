@@ -14,11 +14,14 @@ Remember to unzip to a real directory before running everything!
 ## Problem 1: Import Data
 
 1.1 Import the tidyverse
+
 ```{r}
 
 ```
 
-1.2 Read the airbnb file: data/airbnb.csv
+1.2 Read the airbnb file: data/listings.csv
+
+You'll need to add this file to your project in the appropriate folder. You can get it from module 2 or module 3. 
 
 ```{r}
 
@@ -32,6 +35,7 @@ Remember to unzip to a real directory before running everything!
 
 
 ## Problem 2: Research Question (You don't need code for this question)
+
 *For this problem you'll answer some questions to help explore your interests in data science. It's worth spending some time thinking about your interests and what you want to do as these questions will grow into your final poster project. That said, these are questions that you're interested in. They don't have to be things that you know the answer to and still less new areas of study.*  
   
 *However, problem 3 asks you to come up with a 'big data' dataset that you think you might use to answer your question. If you're new to R or not sure about what to do, I encourage you to use the Airbnb data that we'll be using in class. In that case, make sure that your answers to problem 2 relate to the airbnb data.*
@@ -42,16 +46,17 @@ Remember to unzip to a real directory before running everything!
 
 If you're using the airbnb set, explain how it connects to your interests.
 
-2.3 Write a preliminary version of a research question that addresses your interest and points to how you might use the data set you've selected.
+2.3: Write a preliminary version of a research question that addresses your interest and points to how you might use the data set you've selected.
 
 ## Problem 3: Import Data and Identify Variables
 
 3.1: Import your data in to R and output the column names
+
 ```{r}
 
 ```
 
-3.2: Examine the variables in your data set. Which variables seem like they would be useful for you. Summarize those variables using summary() and indicate the types of data in those variables.
+3.2: Examine the variables in your data set. Which variables seem like they would be useful for you? Summarize those variables using summary() and indicate the types of data in those variables.
 
 ```{r}
 
