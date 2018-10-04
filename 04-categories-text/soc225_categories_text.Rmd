@@ -300,16 +300,95 @@ If you have extra time, have a look the `gss_cat` data set, included in the `for
 
 # Text data
 
-(aka "strings")
+Character vectors are more than just categories---they can contain rich, messy, unstructured data that we might use to produce categories or quantities. 
 
-Like `forcats`, `stringr` is a part of the tidyverse that isn't loaded by default. 
+When we talk about manipulating character data in this way, we usually call the data a *string*. The `stringr` package contains tools for working with strings. Like `forcats`, `stringr` is a part of the tidyverse that isn't loaded by default. It contains some sample data we'll use, a list of names of fruit.
 
-This module is based off of http://stat545.com/block028_character-data.html and Chapter 14 of R for Data Science (http://r4ds.had.co.nz/strings.html). 
+**Question 3.1: Load the `stringr` package and check out the list of `fruit` it contains**
 
 ```{r}
-library(stringr)
 
-fruit
+```
+
+## Combining strings
+
+`str_c` is our basic way of joining strings together: 
+
+```{r}
+str_c("pine", "apple")
+```
+
+You can join as many as you'd like: 
+
+```{r}
+str_c("pine", "apple", "s")
+```
+
+You can see that they're joined together with no space in between. If you want to change that, use `sep`:
+
+```{r}
+str_c("crab", "apple", sep = " ")
+```
+
+`str_c` is *vectorized*; it will recycle strings, like so: 
+
+```{r}
+str_c(c("pine", "crab"), "apple")
+```
+
+
+
+```{r}
+str_c(c("pine", "crab"), "apple", collapse = " ")
+```
+
+**Question 3.2: Combine all of the fruit in `fruit` into a single string, delineated by commas. Do you need to use `sep` or `collapse`? Why?**
+
+```{r}
+
+```
+
+## Pulling out parts of strings
+
+The basic idea is that we take a **string** (or vector of strings) and apply some sort of **pattern** to it. There are different kinds of things we might want to get back out of this. For example: 
+
+- only the entries that match the pattern (`str_subset`)
+- TRUE or FALSE (`str_detect`)
+- the pattern itself (`str_extract`)
+
+## detect
+
+```{r}
+fruit %>% str_subset("^a")
+
+data_frame(fruit) %>%
+  filter(str_detect(fruit, "^a"))
+
+data_frame(fruit) %>%
+  filter(str_detect(fruit, "a$"))
+
+str_sub(fruit, 1, 1)
+
+data_frame(fruit) %>%
+  mutate(first_letter = str_sub(fruit, 1, 1)) %>%
+  ggplot(aes(x = fct_rev(fct_infreq(first_letter)))) + 
+  geom_bar() + 
+  coord_flip() + 
+  ylim(0, 13)
+
+data_frame(fruit) %>%
+  mutate(first_letter = str_sub(fruit, 1, 1)) %>%
+  ggplot(aes(x = fct_rev(first_letter))) + 
+  geom_bar() + 
+  coord_flip() + 
+  ylim(0, 13)
+```
+
+## extract
+
+Let's say we're interested in trends in fruit names.
+
+```{r}
 
 data_frame(fruit) %>%
   mutate(type = str_extract(fruit, "fruit|berry|melon")) %>%
@@ -317,12 +396,29 @@ data_frame(fruit) %>%
   geom_bar()
 ```
 
-```{r}
+REPLACE
 
+## Splitting strings
+
+```{r}
+best_coast <- c("Seattle, WA", "Portland, OR", "San Francisco, CA", "Vancouver, BC") 
+
+
+str_split(best_coast, ", ")
+str_split_fixed(best_coast, ", ", n = 2)
+
+
+data_frame(best_coast) %>%
+  mutate(split = str_split(best_coast, ", "), 
+         city = map_chr(split, 1), 
+         state = map_chr(split, 2)) %>%
+  select(-split)
 ```
 
 ## Going further with text data
 
-regex
+The text module is based off of http://stat545.com/block028_character-data.html and Chapter 14 of R for Data Science (http://r4ds.had.co.nz/strings.html). You can start with those resources for a deeper dive into strings.
 
-What if you want to go further with analyzing unstructured text data? For instance, what if you want to analyze word counts or sentiments in a novel, or a bunch of tweets? The `tidytext` package is one framework for doing this. *Text Mining with R*, by Julia Silge and David Robinson, is a free online textbook for working with tidy text data, which you can find here: https://www.tidytextmining.com/
+If you want to get fancy with extracting bits of strings, you'll need to learn more about **regex**. Regex, *regular expressions*, is a way of representing more complex patterns.  
+
+It's possible to go much further with analyzing unstructured text data. For instance, what if you want to analyze word counts or sentiments in a novel, or a bunch of tweets? The `tidytext` package is one framework for doing this. *Text Mining with R*, by Julia Silge and David Robinson, is a free online textbook for working with tidy text data, which you can find here: https://www.tidytextmining.com/
