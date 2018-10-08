@@ -163,7 +163,7 @@ Then we can use all the verbs we've used from the tidyverse.
 ```
 
 
-# 2: Categorical data
+# 2: Categorical data (aka "factors")
 
 Let's think back to the kinds of variables we encounter during analysis, and how we might use R's data types and data structures to represent them. Continuous variables, of course, can be represented with numeric vectors. 
 
@@ -298,7 +298,7 @@ Try out using `geom_col()` for this plot. How is it different from `geom_bar()`?
 
 If you have extra time, have a look the `gss_cat` data set, included in the `forcats` package. This is some sample data from the General Social Survey (GSS), one of the most important ongoing social scientific surveys. The sample includes data on race, religion, political party affiliation, and marital status. Experiment with these other `forcats` functions on `gss_cat`.
 
-# Text data
+# 3: Text data (aka "strings")
 
 Character vectors are more than just categories---they can contain rich, messy, unstructured data that we might use to produce categories or quantities. 
 
@@ -324,7 +324,7 @@ You can join as many as you'd like:
 str_c("pine", "apple", "s")
 ```
 
-You can see that they're joined together with no space in between. If you want to change that, use `sep`:
+You can see that they're joined together with no space in between. If you want to change that, use the argument `sep`:
 
 ```{r}
 str_c("crab", "apple", sep = " ")
@@ -336,7 +336,7 @@ str_c("crab", "apple", sep = " ")
 str_c(c("pine", "crab"), "apple")
 ```
 
-
+The argument `collapse` will combine all of the input vectors at the very end: 
 
 ```{r}
 str_c(c("pine", "crab"), "apple", collapse = " ")
@@ -350,69 +350,75 @@ str_c(c("pine", "crab"), "apple", collapse = " ")
 
 ## Pulling out parts of strings
 
-The basic idea is that we take a **string** (or vector of strings) and apply some sort of **pattern** to it. There are different kinds of things we might want to get back out of this. For example: 
+The basic idea here is that we take a **string** (or vector of strings) and apply some sort of **pattern** to it. There are different kinds of things we might want to get back out of this, depending on our goal. 
 
-- only the entries that match the pattern (`str_subset`)
-- TRUE or FALSE (`str_detect`)
-- the pattern itself (`str_extract`)
+For instance, we might want 
 
-## detect
+- only the items that match the pattern (`str_subset`)
+- TRUE or FALSE for every item (`str_detect`)
+- the pattern itself for every item (`str_extract`)
+
+This can be a handy way filter a data set or to create new variables out of messy text data.
+
+Let's begin by looking at fruits starting with the letter "a". The "^" here means the beginning of a string. 
 
 ```{r}
-fruit %>% str_subset("^a")
+str_subset(fruit, "^a")
+```
 
-data_frame(fruit) %>%
+What do we get back if we try `str_detect` with the same pattern?
+
+```{r}
+str_detect(fruit, "^a")
+```
+
+How could we use this? If we have a data frame of fruit, then `str_detect` works nicely with `filter`: 
+
+```{r}
+fruit_data <- data_frame(fruit)
+
+fruit_data %>%
   filter(str_detect(fruit, "^a"))
-
-data_frame(fruit) %>%
-  filter(str_detect(fruit, "a$"))
-
-str_sub(fruit, 1, 1)
-
-data_frame(fruit) %>%
-  mutate(first_letter = str_sub(fruit, 1, 1)) %>%
-  ggplot(aes(x = fct_rev(fct_infreq(first_letter)))) + 
-  geom_bar() + 
-  coord_flip() + 
-  ylim(0, 13)
-
-data_frame(fruit) %>%
-  mutate(first_letter = str_sub(fruit, 1, 1)) %>%
-  ggplot(aes(x = fct_rev(first_letter))) + 
-  geom_bar() + 
-  coord_flip() + 
-  ylim(0, 13)
 ```
 
-## extract
-
-Let's say we're interested in trends in fruit names.
+**Question 3.3: "$" indicates the *end* of a string. Find all the fruit names that end with "a". Do this with both `fruit` and `fruit_data`.**
 
 ```{r}
 
-data_frame(fruit) %>%
-  mutate(type = str_extract(fruit, "fruit|berry|melon")) %>%
-  ggplot(aes(x = type)) + 
-  geom_bar()
 ```
 
-REPLACE
+Let's pretend I'm a fruit marketer interested in the latest trends in fruit names. I can extract particular patterns of interest using `str_extract`. (Remember, "|" means "or".)
 
-## Splitting strings
+```{r}
+str_extract(fruit, "fruit|berry|melon")
+```
+
+**Question 3.4: Make a bar chart using these extracted elements. You can add any other elements that you're interested in to the pattern.**
+
+```{r}
+
+```
+
+## Exercises
+
+Type `str_` into your console to see more of the tools `stringr` contains. These exercises are meant to familiarize you with a few of them. Other functions you might find particularly useful include `str_replace` (find a pattern and replace it with something else) and `str_to_lower` (turn everything to lower case). 
+
+**Question 3.5: Substrings. `str_sub` extracts a part of a string based on position. Check out the help for it, and use it to extract the first letter of each `fruit`. Make a bar chart of initial letter frequencies.** 
+
+(Remember, you can use categorical tools like fct_rev and fct_infreq to improve your chart.)
+
+```{r}
+
+```
+
+**Question 3.6: Splitting strings. Try out `str_split` and `str_split_fixed` on the `best_coast` data below. What's the difference in the resulting data structures?** 
+
+For a challenge, see if you can turn the city and state into separate columns of a data frame. 
 
 ```{r}
 best_coast <- c("Seattle, WA", "Portland, OR", "San Francisco, CA", "Vancouver, BC") 
 
 
-str_split(best_coast, ", ")
-str_split_fixed(best_coast, ", ", n = 2)
-
-
-data_frame(best_coast) %>%
-  mutate(split = str_split(best_coast, ", "), 
-         city = map_chr(split, 1), 
-         state = map_chr(split, 2)) %>%
-  select(-split)
 ```
 
 ## Going further with text data
@@ -422,3 +428,17 @@ The text module is based off of http://stat545.com/block028_character-data.html 
 If you want to get fancy with extracting bits of strings, you'll need to learn more about **regex**. Regex, *regular expressions*, is a way of representing more complex patterns.  
 
 It's possible to go much further with analyzing unstructured text data. For instance, what if you want to analyze word counts or sentiments in a novel, or a bunch of tweets? The `tidytext` package is one framework for doing this. *Text Mining with R*, by Julia Silge and David Robinson, is a free online textbook for working with tidy text data, which you can find here: https://www.tidytextmining.com/
+
+# Hints
+
+3.4 Start with `fruit_data` and use `mutate` to create a new variable.
+
+3.6 Here's one way to do it. We haven't talked about the `purrr` package in the Tidyverse, but it's got some powerful tools like `map_chr`.
+
+```
+data_frame(best_coast) %>%
+  mutate(split = str_split(best_coast, ", "), 
+         city = map_chr(split, 1), 
+         state = map_chr(split, 2)) %>%
+  select(-split)
+```
