@@ -23,7 +23,7 @@ We'll practice doing this with two new data sets related to algorithms and bias.
 
 The best way to visualize covariation depends on whether your variables are categorical or numeric. This website has an elegant flow chart and examples: https://www.data-to-viz.com/
 
-Today's exercises are inspired by these chapters:
+This module's exercises are inspired by these chapters:
 
 - Chapter 7, Exploratory Data Analysis, of R for Data Science
   - http://r4ds.had.co.nz/exploratory-data-analysis.html
@@ -44,7 +44,7 @@ Look through the article and use it to answer these questions.
   
 **Question 2.1: What's the main take home for this article? What do they want readers to understand?**  
 
-**Question 2.2: How was data important to the work these Journalists did?**  
+**Question 2.2: How was data important to the work these journalists did?**  
 
 **Question 2.3: Interpret the charts labeled "Black Defendents' Risk Scores" and "White Defendents' Risk Scores." What is the message of those visualization? If I told you that the authors used ggplot to make them, what 'geom' function do you think they used? Why?**   
 
@@ -104,18 +104,23 @@ This isn't a great way to compare the two. Why not? Because the relative sizes o
 
 Instead of counts, let's compare *proportions*. To do that, we'll need new `dplyr` verbs. 
 
-`group_by` adds a grouping structure to a data frame. You can then use `mutate` or `summarize` on those groups.
+`group_by` adds a grouping structure to a data frame. You can then use `mutate` or `summarize` on those groups. Think about how grouping matters for `sum` when calculating proportions below.
 
 `count` groups by a variable or variables, and then summarizes the number of rows in each group. It's the same as `group_by %>% summarize(n = n()) %>% ungroup()`. 
 
 ```{r}
-compas %>% # take the compas data
-  count(sex, decile_score) %>% # add counts of how many fit into each decile score for each gender
-  group_by(sex) %>% # group by sex
-  mutate(proportion = n/sum(n)) %>% # add a column of proportion by dividing, the number of women/men who got a particular decile score by the total number of that gender
-  ggplot(aes(x = decile_score, y = proportion)) + # plot our results
-  geom_bar(stat = "identity") + # specify that we don't want to use counts in our bar char
-  facet_wrap(~sex) # facet wrap
+compas %>% # start with the compas data
+  count(sex, decile_score) %>% # aggregate to counts of how many observations 
+                               # fit into each decile score for each gender.
+                               # the count variable is called "n"
+  group_by(sex) %>% # add a grouping structure to the aggregate data
+  mutate(proportion = n/sum(n)) %>% # create a column of proportions by dividing 
+                                    # the number of women/men who got a particular
+                                    # decile score by the total number of that gender
+  ggplot(aes(x = decile_score, y = proportion)) + # start a plot of our results
+  geom_bar(stat = "identity") + # specify that we don't want ggplot to make counts
+                                # because we've done that already!
+  facet_wrap(~sex) # separate panels by sex
 
 ```
 
@@ -200,9 +205,10 @@ Notice that variable names can't normally have spaces in them! Since these do, w
 
 ```{r}
 schools %>% # take our modified data
-  ggplot(aes(x = `Percent of Students Chronically Absent`, # assign the x and y aesthetics
-             y = `Student Attendance Rate`)) + 
-  geom_point(alpha = .5) + # make a scatterplot, increasing transparency to show when points fall in the same place
+  ggplot(aes(x = `Percent of Students Chronically Absent`, 
+             y = `Student Attendance Rate`)) + # map variables to x and y
+  geom_point(alpha = .5) + # make a scatterplot, increasing transparency to show 
+                           # when points fall in the same place
   geom_smooth() # plot a trendline using the default method, 'gam' in this case
 ```
 
@@ -232,7 +238,7 @@ These plots are based on a kernel by Randy Lao: https://www.kaggle.com/randylaos
 
 ```{r}
 schools %>% # take the schools data
-  ggplot(aes(x = `Economic Need Index`, y = `Percent White`)) + # grab our variables
+  ggplot(aes(x = `Economic Need Index`, y = `Percent White`)) + # map our variables
   geom_point() + # plot the scatter
   geom_smooth() # and the smoothed line
 ```
@@ -310,7 +316,7 @@ p +
 **Question 3.14: Interpret our results**
 
 
-# 4 Self Exploration
+# 4: Self Exploration
 
 Now you need to get in touch with the deepest parts of yourself through silent meditation.
 
@@ -339,7 +345,7 @@ Hypothesis:
 
 ```
 
-#  5 Challenge: run a model
+# 5 Challenge: run and visualize a model
 
 Statistical models in R use a formula syntax (`z ~ x + y`). `lm` and `glm` are common modeling functions. Try out models incorporating multiple covariates on either of today's data sets. Print a summary of the results, and, if you're ambitious, try to visualize them. See http://socviz.co/modeling.html and http://r4ds.had.co.nz/model-basics.html for how to do that.
 
@@ -377,4 +383,4 @@ schools <-
   mutate(`School Income Estimate` = parse_number(`School Income Estimate`))
 ```
 
-4.2 These will be bar plots if your data is categorical, histograms if it's continuous. If the data is categorical but has lots of different values, you should consider combining it using factors.
+4.2 These will be bar plots if your data is categorical, histograms if it's continuous. If the data is categorical but has lots of different values, you should consider combining categories using factors.
