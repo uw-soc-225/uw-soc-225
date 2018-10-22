@@ -75,7 +75,7 @@ sandwich <-
   Close()
 ```
 
-You might notice that a key difference here is that the functions have lost their first arguments. That's becuase the pipe automatically takes the output from the left and uses it as the first arugment of the function to the right. So in the operation above, 'Cut' takes bread as its argument, 'Smear' takes Cut(bread) as its first argument, 'Apply' takes Smear(Cut(Bread), condiment = 'peanut_butter') as its first argument and so on.
+You might notice that a key difference here is that the functions have lost their first arguments. That's because the pipe automatically takes the output from the left and uses it as the first argument of the function to the right. So in the operation above, 'Cut' takes bread as its argument, 'Smear' takes Cut(bread) as its first argument, 'Apply' takes Smear(Cut(Bread), condiment = 'peanut_butter') as its first argument and so on.
 
 Unfortunately, we don't have the technology yet to make real sandwiches this way. Instead, we'll be doing the same thing to data.
 
