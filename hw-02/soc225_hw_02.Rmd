@@ -1,7 +1,7 @@
 ---
 title: "Homework 2"
 subtitle: "Soc 225: Data & Society"
-author: "[PUT YOUR NAME HERE]"
+author: "PUT YOUR NAME HERE"
 date: "`r Sys.Date()`"
 output: html_notebook
 ---
@@ -10,78 +10,106 @@ Write all code in the chunks provided!
 
 Remember to unzip to a real directory before running everything!
 
-Question one should be roughly analogous to what we've done in class. There are hints at the bottom of this document if you get stuck. If you still can't figure it out, go to google/stack exchange/ask a friend. Finally, email me or come to office hours :).
+Problem 1 should be roughly analogous to what we've done in class, with a few extensions. There are hints at the bottom of this document if you get stuck. If you still can't figure it out, go to google/stack exchange/ask a friend. Finally, email me or come to office hours :).
 
 ## Problem 1: Piping Hot Variables
 
-1.1 Set up your environment by: 
--A. Loading the tidyverse  
--B. Reading the Airbnb Data (I haven't included it in this .zip file, so you'll have to move it into the right directory)  
+*This problem uses `dplyr` verbs to answer questions about an Airbnb data set.* 
+
+### 1.1: Get the data
+
+Go to [Inside Airbnb](http://insideairbnb.com/get-the-data.html) and download the "Detailed Listings" data for Seattle, `listings.csv.gz`. This file has many more variables than the "Summary" file we've been using in class. Put it in a `data/` subfolder in your `hw-02` project folder. 
+
+[This is a compressed (gzipped) file, but R should be able to handle it as-is. If you run into trouble, try unzipping the file before reading it into R.]
+
+### 1.2: Set up your R environment 
+
+a. Load the tidyverse
+b. Read the detailed Airbnb data into R
   
 ```{r}
-library(tidyverse)
-airbnb <- read_csv('~/OneDrive - UW/UW/Data and Society/Lab/Lab Homeworks/Homework 1/airbnb.csv') #from the tidyverse, it makes nice factors
+
 ```
   
-1.2 Use the data to answer this question: For how many units does the host live in a different neighborhood than the listing?  
+### 1.3: Use the data to answer a question
+
+*For how many units does the host live in a different neighborhood from the listing? For how many units does the host live in the same neighborhood as the listing?*
+
+Try to figure out which variables to use from their names, and think about which verbs you've learned about might work to answer this question. See the hints at the end if you need help. 
+
 ```{r}
-airbnb %>% mutate(host_neighbourhood = ifelse(is.na(host_neighbourhood),'none',host_neighbourhood)) %>% filter(neighbourhood == host_neighbourhood)
+
 ```
+
+### 1.4: Build on your answer
   
-1.3 Building on that work, what is the average number of listings for hosts that live in the same neighborhood as their listing and hosts who live in different neighborhoods? 
-  
+*Building on that work, what is the average number of listings for hosts that live in the same neighborhood as their listing? What's the average for hosts who live in different neighborhoods from their listing?* 
+
+The `mean` function will take the average of a variable, but you might need to look up how to use it. See the hints for more suggestions if you get stuck.
+
 ```{r}
-airbnb %>% select(neighbourhood, host_neighbourhood)
+
 ```
   
-1.4 Reflect on your answer to 1.3. What might cause the results you got? How does that connect to the idea that Airbnb might be changing neighborhoods?   
-  *Your answer should be at least a few sentences here*
+### 1.5: Reflect and interpret
+
+Reflect on your answer to 1.4. What might cause the results you got? How does that connect to the idea that Airbnb might be changing neighborhoods?  
+
+*Your answer should be at least a few sentences here*
 
 ## Problem 2: Literature Review
+
 *This question asks you to think deeply about the research question you're investigating. Each answer should be around 100 words.*
 
-2.1: What dataset did you select (include a link agian)? Why did you select it? What is your research question? What variables do you plan to use to answer your question?
+2.1: What dataset did you select (include a link again)? Why did you select it? What is your research question? What variables do you plan to use to answer your question?
 
-2.2: Find at least two articles (at least one must be from an academic journal) that have addressed a question similar to your own. What data did they use? What problems did they have? *If you 'can't find' two articles, provide a screenshot of your search in the university library system from here: http://www.lib.washington.edu/*
+2.2: Find at least two articles (at least one must be from an academic journal) that have addressed a question similar to your own. What data did they use? What problems did they have? 
+
+*If you "can't find" two articles, provide a screenshot of your search in the university library system from here: http://www.lib.washington.edu/*
 
 2.3: What is one way that you have to modify or examine your data to begin to answer your question?
 
 ## Problem 3: Pipe your own data
 
-3.1: Using the functions we've worked with in class (select, filter, mutate, groupby, summarise), plus any others you'd like to use, examine the key relationship from your research question.
+3.1: Using the functions we've worked with in class (select, filter, arrange, mutate), plus any others you'd like to use, examine the key relationship from your research question.
 
 You must:
-a. Created a new dataset that only includes the variables you're interested in
-b. Output a version of that dataset that only includes certain values, hopefully ones you're interested in.
-c. Create a modified version of one of your variables (many of you will *need* to do this, but even if you don't, I want to see that you can)
-d. Use groupby to group your data by one variable and see the mean (or similar) of another variable in those groups.
 
-*Use as many codeblocks as you need*
+a. Create a new dataset that only includes the variables you're interested in
+b. Output a version of that dataset that only includes certain values of observations, hopefully ones you're interested in.
+c. Order your data by the values of one variable you're interested in. 
+d. Create a modified version of one of your variables (many of you will *need* to do this, but even if you don't, I want to see that you can)
+e. Look up and try out one new verb for data transformation. The RStudio data transformation cheat sheet is a fantastic place to start: https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf
+
+For e., we'd recommend trying out `group_by` + `summarize`. You can group your data by one variable, and then see the mean (or similar) of another variable within each of those groups.
+
+*Use as many code blocks as you need for a-e*
   
 ```{r}
 
 ```
 
 
-##Hints
-1.2
+## Hints
 
-Try using these steps:
-Step 1: identify the variables you need
-Listing neighborhood: neighbourhood
-Host's neighborhood: host_neighbourhood
+1.3 Try using these steps:
 
-Step 2: Filter the data to only include the rows where those variables are not equal (check online if you're not sure how to write not equal in r, remember that equals is ==, less than is <)
+- Step 1: identify the variables you need
+  - Listing neighborhood: `neighbourhood`
+  - Host's neighborhood: `host_neighbourhood`
 
-Step 3: How many rows are left in the filtered data?
+- Step 2: Filter the data to only include the rows where those variables are not equal. Look back to Module 2 (or look online) if you need a reminder about how to write "equal", "not equal", and so on in R.
 
-1.3
-Ignore/Don't worry about NAs
-You might want to make a new variable indicating if a host is a local host (your answer to 1.2 will help here!)
-The variable for number of listings is host_listings_count
+- Step 3: How many rows are left in the filtered data?
+
+Extra food for thought: how do "NA" (missing) values get handled here? Do you think that makes sense? Should you do something else with them, maybe using `is.na`?
+
+1.4 The variable for number of listings is `host_listings_count`. You might want to make a new variable indicating if a host is a local host (your answer to 1.3 will help here!). There are many ways to use `mean` on a subset of data, but the best approach is one we'll introduce later in Module 5: `group_by` + `summarize`. Try it out now if you can! For this problem, don't worry about NAs. 
 
 3.1
+
 a. use select()
 b. use filter()
-c. use mutate()
-d. use groupby(var1) %>% summarise(mean = mean(var2))
+c. use arrange()
+d. use mutate()
+e. use group_by(var1) %>% summarise(mean = mean(var2))
