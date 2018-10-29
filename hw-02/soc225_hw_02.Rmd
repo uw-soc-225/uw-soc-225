@@ -81,7 +81,7 @@ c. Order your data by the values of one variable you're interested in.
 d. Create a modified version of one of your variables (many of you will *need* to do this, but even if you don't, I want to see that you can)
 e. Look up and try out one new verb for data transformation. The RStudio data transformation cheat sheet is a fantastic place to start: https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf
 
-For e., we'd recommend trying out `group_by` + `summarize`. You can group your data by one variable, and then see the mean (or similar) of another variable within each of those groups.
+For e., we'd recommend using `group_by` + `summarize`. You can group your data by one variable, and then see the mean (or similar) of another variable within each of those groups.
 
 *Use as many code blocks as you need for a-e*
   
@@ -104,7 +104,7 @@ For e., we'd recommend trying out `group_by` + `summarize`. You can group your d
 
 Extra food for thought: how do "NA" (missing) values get handled here? Do you think that makes sense? Should you do something else with them, maybe using `is.na`?
 
-1.4 The variable for number of listings is `host_listings_count`. You might want to make a new variable indicating if a host is a local host (your answer to 1.3 will help here!). There are many ways to use `mean` on a subset of data, but the best approach is one we'll introduce later in Module 5: `group_by` + `summarize`. Try it out now if you can! For this problem, don't worry about NAs. 
+1.4 The variable for number of listings is `host_listings_count`. You might want to make a new variable indicating if a host is a local host (your answer to 1.3 will help here!). There are many ways to use `mean` on a subset of data, but the best approach is one we introduce in Module 5: `group_by` + `summarize`. Try it out now if you can! For this problem, don't worry about NAs. 
 
 3.1
 
