@@ -169,7 +169,7 @@ Once you've extracted the data frame, make a line plot of population growth over
 # write your code here
 ```
 
-# Challenge: Authentication
+## Challenge: Authentication
 
 Many APIs require some form of *authentication* to access. The simplest form of authentication is through an API key, which you send as a query parameter along with your request. 
 
@@ -178,3 +178,35 @@ Choose either the Census API or the Google Maps Geocoding API, request an API ke
 https://walkerke.github.io/tidycensus/articles/basic-usage.html
 
 https://developers.google.com/maps/documentation/geocoding/start
+
+```{r}
+
+```
+
+## More APIs
+
+Most major websites have some sort of public API now. In some cases, there are R packages designed to make working with those APIs easier. In each case, you'll have to read the documentation to figure out how to use the API. That documentation is usually written for application developers, *not* for researchers or data scientists.
+
+### Social media
+
+**Twitter**: https://developer.twitter.com/en/docs.html
+
+tutorial: https://github.com/ezagheni/IUSSP2017_Twitter_module
+
+**Facebook**: https://developers.facebook.com/docs/apis-and-sdks/ 
+
+tutorial (for the Marketing API): https://github.com/ccgilroy/r-estimates-fb-ads
+
+These platforms have complicated authentication processes, and they change often. This means that **the linked tutorials are likely out-of-date**, despite being recent. 
+
+### Other platforms
+
+**The New York Times**: https://developer.nytimes.com/
+
+tutorial: https://github.com/ccgilroy/nyt-api-httr-demo
+
+**Yelp**: https://www.yelp.com/fusion
+
+example: https://github.com/ccgilroy/yelp-restaurants
+
+**Zillow**: https://www.zillow.com/howto/api/APIOverview.htm
