@@ -90,7 +90,10 @@ length(unique(ads_all$nyu_id))
 
 Now we'll introduce multiple tables with different units of observation. This is called **relational data**. You *join* these different tables of data using **keys**.
 
-Each ad has a sponsor: 
+These are tricky concepts to understand. I recommend looking through the diagrams here to get a better handle on different kinds of joins: 
+https://r4ds.had.co.nz/relational-data.html#understanding-joins
+
+In the political ads data, each ad has a sponsor: 
 
 ```{r}
 head(ad_sponsors)
@@ -177,6 +180,8 @@ Do some of these sponsors seem to be the same or a closely related political ent
 # Challenge: join more data
 
 `demo_group.csv` and `snapshot_demo.csv` contain information on impressions broken down by demographic groups. See if you can join these to the snapshot information from above to break down sponsors by impressions. Be careful about what order you join data in. You may want to use `right_join` as well as `left_join`. 
+
+R4DS has a drawing of the different tables in the `nycflights13` data showing how they relate (https://r4ds.had.co.nz/relational-data.html#nycflights13-relational); consider sketching out something similar for the political ads data as you work with more tables. 
 
 What do the impressions for the Planned Parenthood Federation of America look like for different demographic groups? Which groups does the NRA target? Are they different?
 
