@@ -151,7 +151,7 @@ Here's an excerpt from the beginning:
 
 1.2 
 
-Use `mutate` for this. You can replace the original `price` variable, or name it something else. 
+Use `mutate` for this. You can replace the original `price` variable, or name it something else. There are a couple things you can use on `price` inside the mutate: 
 
 - `parse_number`, a function in the `readr` package, does a good job of converting currency to numbers on its own.
 
