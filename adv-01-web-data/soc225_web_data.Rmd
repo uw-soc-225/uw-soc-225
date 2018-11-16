@@ -177,6 +177,8 @@ Choose either the Census API or the Google Maps Geocoding API, request an API ke
 
 https://walkerke.github.io/tidycensus/articles/basic-usage.html
 
+NOTE: the Google Maps API no longer has a free tier, and requires a credit card to use. Google (supposedly) provides $200 of free usage every month, but be careful not to exceed this!
+
 https://developers.google.com/maps/documentation/geocoding/start
 
 ```{r}
