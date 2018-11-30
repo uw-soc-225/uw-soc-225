@@ -64,7 +64,7 @@ Bonus: try showing how this comparison differs by neighborhood group.
 
 ### 1.5: Interpret your answer
 
-Interpret your answer to 1.3. Check the hints if you need help.
+Interpret your answer to 1.4. Check the hints if you need help.
 
 *Your answer should be at least a few sentences here*
 
