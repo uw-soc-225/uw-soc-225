@@ -51,7 +51,8 @@ There are two ways of identifying and selecting segment of html: CSS selectors a
 
 ```{r}
 # CSS selector
-section <- html_node(wikipedia_page, css = "#mw-content-text > div > table")
+section <- html_node(wikipedia_page, 
+                     css = "#mw-content-text > div > table.wikitable")
 
 # XPath
 # section <- html_node(wikipedia_page, xpath = '//*[@id="mw-content-text"]/div/table')

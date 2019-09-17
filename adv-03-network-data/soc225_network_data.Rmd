@@ -66,6 +66,8 @@ We connect them, as usual, with the pipe (`%>%`).
 g_sw <- 
   graph_from_data_frame(d = edges_sw, vertices = nodes_sw, directed = FALSE) %>%
   as_tbl_graph()
+
+g_sw
 ```
 
 Type `g_sw` into your console and see what prints out.

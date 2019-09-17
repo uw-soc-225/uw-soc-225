@@ -22,7 +22,7 @@ R is a programming language, originally designed for statistics. It's one of the
 
 To install R, go to this website and click the appropriate link for your computer's operating system: https://cloud.r-project.org/
 
-I'd recommend the most recent version of R, which is 3.5.1. You'll want to update your R version occasionally. 
+I'd recommend the most recent version of R, which is 3.6.0. You'll want to update your R version occasionally. 
 
 # Install RStudio
 

@@ -36,7 +36,7 @@ You'll need to add this file to your project in the appropriate folder. You can 
 
 ## Problem 2: Research Question (You don't need code for this question)
 
-*For this problem you'll answer some questions to help explore your interests in data science. It's worth spending some time thinking about your interests and what you want to do as these questions will grow into your final poster project. That said, these are questions that you're interested in. They don't have to be things that you know the answer to and still less new areas of study.*  
+*For this problem you'll answer some questions to help explore your interests in data science. It's worth spending some time thinking about your interests and what you want to do as these questions will grow into your final data project and presentation. That said, these are questions that you're interested in. They don't have to be things that you know the answer to and still less new areas of study.*  
   
 *However, problem 3 asks you to come up with a 'big data' dataset that you think you might use to answer your question. If you're new to R or not sure about what to do, I encourage you to use the Airbnb data that we'll be using in class. In that case, make sure that your answers to problem 2 relate to the airbnb data.*
 
