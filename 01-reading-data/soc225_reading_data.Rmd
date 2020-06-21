@@ -13,6 +13,7 @@ output:
 - Open a project file in R
 - Read data of various types into R
 - Describe the sources of datasets
+- Knit an Rmarkdown document to html
 
 # 0: Opening this file
 
@@ -30,11 +31,13 @@ In the same directory as this `.Rmd` file and the project file, there's a direct
 
 These data come from Inside Airbnb, http://insideairbnb.com/. Go to the website and have a look at the About, Behind, and Get the Data pages. *Use what you read to answer the questions below. Just type your answers below the questions.*
   
-  **Question 1.1: Who created these data sets?**  
+  **Question 1.1: What was the _context_ of this data's production, ie:** 
+   - Who created this data set?
+   - How did they do it?
+   - Where did the data come from?
   
-  **Question 1.2: Why did they do it?**  
+  **Question 1.2: What were the original purpose of this data? Is that the same as the purpose of the person who collected it? As our purposes?**  
   
-  **Question 1.3: Where were the data sourced from?**  
   
 ## 2: Setup
   
@@ -42,11 +45,14 @@ These data come from Inside Airbnb, http://insideairbnb.com/. Go to the website 
 
 You can read more about the tidyverse here: https://www.tidyverse.org/
 
-If a package hasn't been installed on your machine, you'll need to install it. For instance, you'd type `install.packages("tidyverse")` into the *console*. You only need to do this once for each R installation, but in order to use a package, you have to load it. 
+If a package hasn't been installed on your machine, you'll need to install it. For instance, you'd type `install.packages("tidyverse")` into the *console*. You only need to do this once for each R installation, but every session you want to use a package, you'll have to load it. 
 
-Code chunks let us incorporate code into text documents like this one. They're very useful for creating interactive documents and for testing out new code. The output from a code chunk shows up right below it (and often also in the console). You can run the code in a chunk by pressing the green arrow int he top right of the chunk. You can also run just one line of code by placing your cursor on that line and pressing `CTRL` plus `Return`.
+Rmarkdown, when used in R studio, gives us some advantages to doing data science. For one, it lets us run code in "code chunks". Code chunks let us incorporate code into documents that also have text and eventually visualizations, like this one. They're very useful for creating interactive documents and for testing out new code. The output from a code chunk shows up right below it (and often also in the console). You can run the code in a chunk by pressing the green arrow in the top right of the chunk. You can also run just one line of code by placing your cursor on that line and pressing `CMD` + `Return` on Mac or `CTRL` + `Return` on Windows or linux.
 
-**Question 2.1 Once you've completed installation, run this chunk of code to load the tidyverse:**
+You can make a new code chunk by using the insert menu above, typing the backtics by hand, or by pressing `CMD`+`option`+`i` on a Mac or `CTRL` + `ALT` + `i` on windows or linux.
+
+
+**Question 2.1 Install the tidyverse package using the instuctions above. Once you've completed installation, run this code chunk to load the tidyverse:**
 
 ```{r}
 library(tidyverse)
@@ -56,13 +62,13 @@ library(tidyverse)
 
 ## 3: Importing data
 
-To use data inside R, we first have to import, or *read*, that data into our environment.
+To use data inside R, we first have to import, or *read*, that data into our environment. The chunk below reads the example data we'll use for this module.
 
 ```{r}
 airbnb_data <- read_csv("data/seattle_airbnb.csv")
 ```
 
-When we do this, we assign the values of the data to a variable, `airbnb_data`, using the arrow (`<-`). When you're typing inside of a code chunk (that's where the code goes), you can use `alt` plus `the minus key` to quickly type the arrow. The object we create is called a data frame.
+When we do this, we assign the values of the data to a variable, `airbnb_data`, using the arrow (`<-`) operator. When you're typing inside of a code chunk (that's where the code goes), you can use `alt` plus `the minus key` to quickly type the arrow. The object we create is called a dataframe.
 
 **Question 3.1: What is the role of each component in the above line of code?**
  - airbnb_data: the variable name we used for the data frame
@@ -73,11 +79,11 @@ When we do this, we assign the values of the data to a variable, `airbnb_data`, 
 
 ## 4: Looking at the data
 
-You can print the data frame to the console by typing the name of the object. Our object was called 'airbnb_data.' 
+You can print the dataframe to the console by typing the name of the object. Our object was called 'airbnb_data.' 
 
 **Question 4.1 Go ahead and type that into the console.**
 
-You can also look at the entire data set using RStudio's built-in viewer. To use that, we use the function 'view().' We can run that command from the console, or from a code chunk like the one below: 
+You can also look at the entire data set using RStudio's built-in viewer. To use that, we use the function 'View().' We can run that command from the console, or from a code chunk like the one below: 
 
 **Question 4.2 Follow the instructions in the code block and run it**
 
@@ -123,7 +129,9 @@ You can extract a single column by name using `$`. Type the name of the datafram
 
 Data isn't always a single, flat table. Sometimes it's nested or hierarchical.
 
-`colors.json` is a file in JSON format. This is a common format for web data. We'll need to load another package, 'jsonlite', in order to read it. *Type `install.packages("jsonlite")` in the console to install it.*
+`colors.json` is a file in JSON format. This is a common format for web data. We'll need to load another package, 'jsonlite', in order to read it. 
+
+*Type `install.packages("jsonlite")` in the console to install it.*
 
 **Question 5.1 Change the code below so that we load the jsonlite package and make a new object called `json_data` by using the `read_json()` function to read the file "data/colors.json".**
 
