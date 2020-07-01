@@ -21,7 +21,7 @@ For the first half of this lab, we'll use the `gapminder` data set. This example
 
 For the second half, we'll use the Seattle Airbnb listings from Inside Airbnb.
 
-**Question 0.1: Use the console to install the package 'gapminder' package, load that package and the tidyverse package.**
+**Question 0.1: Use the console to install the package 'gapminder' package, load that package and the tidyverse package in the code chunk.**
 
 ```{r}
 
@@ -323,6 +323,21 @@ All of the subsequent code can be written in the code chunk below.
 ```{r}
 
 ```
+
+
+
+## Extra Session: Easy Interactive `ggplot` visualizations
+One of the great things about `leaflet` is that the maps you make are interactive. It's actually possible to apply this to any plot you make using ggplot, and it's easy and straightforward. 
+
+First you'll need to install the `plotly` library. Like `ggplot`, `plotly` is its own package for making visualizations that may be more familiar for people used to python or MATLAB. Feel free to investigate it and use it for your final project if you like it. 
+
+However, `plotly` also supports the transformation of vizualizations made in `ggplot` into `plotly` objects using the `ggplotly` function. Load the `plotly` library below and then transform your plot q, from way up above, using `ggplotly`
+
+```{r}
+
+```
+
+Because the generated plot is an html wiget, you can embed it in a webpage, like your final project for this class! While this is optional, it's also super cool and fairly easy, so I encourage you to give it a go.
 
 
 # Hints:
