@@ -32,9 +32,9 @@ Logical: TRUE or FALSE
 **Question 1.1: assign the following three variables values of the proper type**  
 
 ```{r}
-# a <- 
-# b <- 
-# c <- 
+# a <- # make a numeric
+# b <- # make a character
+# c <- # make a logical
 ```
 
 We can check the type of a variable by using the function `typeof()`.   
@@ -100,7 +100,7 @@ If you need more than two dimensions, you'll need an array. We won't cover them,
 
 --- break to talk about getting stuff out of these data-types ---
 
-For vectors, matrices, and arrays, accessing the data you store in them is as simple as []. That is, you just need to throw brackets around the location of the value you want and you'll get it. Each value in one of these data types has a kind of 'address' made up of a numeric vector with lenght equal to the number of dimensions. 
+For vectors, matrices, and arrays, accessing the data you store in them is as simple as []. That is, you just need to throw brackets around the location of the value you want and you'll get it. Each value in one of these data types has a kind of 'address' made up of a numeric vector with lenght equal to the number of dimensions, starting with rows, then columns, then height, then... whatever the fourth demension is called. 
 
 ```{r}
 # grab the third item in my_new_vector
@@ -113,6 +113,7 @@ my_matrix[3, 2]
 my_matrix[, 2]
 ```
 
+--- end break ---
 
 5. List: one dimensional data structure, ordered and named, *multiple data types allowed*  
 
@@ -136,9 +137,14 @@ You can do other cool stuff with lists, like add names to each item to make a na
 
 **Question 1.5: Make a list in R of your favorite things.**
 
+```{r}
+
+```
+
+
 6. Data frames: two-dimensional data structure, only one type of data per column, multiple per row  
 
-This is the data structure we use most often for data analysis in R. Data frames resemble matrices and arrays superficially -- all three are data organized into multiple dimensions. However, data frames are a bit different. The columns are vectors of a single type, but the type of each column can be different. That means that each row is made up of a single entry from each column, and so can include data of different type. That's great for us because we usually want to work with data where each observation (row) has variables of different types.
+This is the data structure we use most often for data analysis in R. Data frames resemble matrices and arrays superficially -- all three are data organized into multiple dimensions. However, data frames are a bit different. The columns are vectors of a single type, but the type of each column can be different. That means that each row is made up of a single entry from each column, and so can include data of different types. That's great for us because we usually want to work with data where each observation (row) has variables of different types.
 
 When we use `read_csv` to read a file, the package `readr` automatically makes a data frame for us. But we can also make a new data frame out of vectors. Imagine if I had some data on trees:
 
@@ -146,7 +152,7 @@ When we use `read_csv` to read a file, the package `readr` automatically makes a
 library(tidyverse)
 
 tree_id <- c(1, 2, 3, 4) # set tree ids from 1-4
-tree_heights <- c(19, 20, 35, 5) # real measured tree heights that I made with a measuring tape
+tree_heights <- c(19, 20, 35, 5) # 100% real measured tree heights that I made with a measuring tape (not really)
 tree_ages <- c(40, 35, 60, 4) # I asked each tree
 tree_names <- c("oak", "poplar", "willow", "beech") # two of these trees really like Pokemon
 
