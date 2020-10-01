@@ -191,7 +191,7 @@ Read the docs for mutate_at!!
 
 Ok, now that our data is nice and clean, we can do some exploration. 
 
-**Question 3.6 Look through the school data agian and make a list of variables that you think would be interesting to explore. Are there any pairs that look interesting to consider together?**
+**Question 3.6 Look through the school data again and make a list of variables that you think would be interesting to explore. Are there any pairs that look interesting to consider together?**
 
 We'll take a few examples and look at the association or *covariation* between two variables. We'll look first at student attendence, then at the connection between economic need and race, and finally you'll examine some variables of your own.
 
@@ -246,11 +246,11 @@ schools %>% # take the schools data
 ** Question 3.10 How could we expend this analysis? What other variables could we include? **
 
 
-### new verb: `gather`
+### new verbs: `pivot_longer / pivot_wider`
 
 We can also examine covariation between racial composition and economic need for all racial groups simultaneously, as different facets of the same plot. But with ggplot2 this only works if each racial category is part of the same variable. Right now, they're in separate columns. We need them to be in the same column. Can you imagine what that would look like?
 
-We'll make this happen by relying on *tidy data* principles to convert the data from **wide** to **long** format. There's a new verb we'll use exactly for this, called `gather`.
+We'll make this happen by relying on *tidy data* principles to convert the data from **wide** to **long** format. There's a new verb we'll use exactly for this, called `pivot_longer`.
 
 First, let's select only the columns we need: 
 
@@ -264,27 +264,27 @@ schools_wide <-
 
 **Question 3.11: How many rows and columns does `schools_wide` have? Which columns seem like they could be part of the same variable?**
 
-`gather` takes as many columns as you'd like and makes two new columns:
+`pivot_longer` takes as many columns as you'd like and makes two new columns:
 
-- a *key* column, with the column names as categories
-- a *value* column, with all of the original column values
+- a *names_to* column, with the column names as categories
+- a *values to* column, with all of the original column values
 
 Now we're ready to go long: 
 
 ```{r}
 schools_long <- 
   schools_wide %>% 
-  # note the syntax for gather!
-  # the new column names come first, 
-  # THEN all of the original columns
-  gather(key = "Race", value = "Percent",
-         `Percent Asian`, `Percent Black`, 
-         `Percent Hispanic`, `Percent White`)
+  # note the syntax for pivot_longer!
+  # columns to pivot into longer format , 
+  # THEN the new column names 
+  pivot_longer(cols = starts_with("Percent"), 
+               names_to = "race",
+               values_to = "percent")
 ```
 
 **Question 3.12: Look at `schools_long`. What happened? How many rows and columns does it have?**
 
-You can read more about `gather` (and its opposite, `spread`) in Chapter 12 of R for Data Science (http://r4ds.had.co.nz/tidy-data.html#spreading-and-gathering). 
+You can read more about `pivot_longer` (and its opposite, `pivot_wider`) in Chapter 12 of R for Data Science (http://r4ds.had.co.nz/tidy-data.html#spreading-and-gathering). 
 
 With the data in long format, we're ready to plot. We'll encode the race variable both as *color* and as separate *facets*. 
 
@@ -373,7 +373,7 @@ compas <-
 ```{r}
 schools_raw <- 
   read_csv("data/2016 School Explorer.csv", 
-           na = c("NA", "N/A"))
+           na = c("NA", "N/A", ""))
 
 schools <- 
   schools_raw %>%
