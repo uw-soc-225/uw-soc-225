@@ -278,8 +278,8 @@ schools_long <-
   # columns to pivot into longer format , 
   # THEN the new column names 
   pivot_longer(cols = starts_with("Percent"), 
-               names_to = "race",
-               values_to = "percent")
+               names_to = "Race",
+               values_to = "Percent")
 ```
 
 **Question 3.12: Look at `schools_long`. What happened? How many rows and columns does it have?**
